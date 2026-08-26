@@ -27,7 +27,7 @@
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
         html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* Navegación Premium - Estandarizada con novaplaytv.github.io */
+        /* Navegación Premium */
         .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         .nav-inner { max-width: 1400px; margin: auto; height: var(--nav-height); padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
@@ -67,7 +67,7 @@
         .category-item:hover .actions { opacity: 1; }
 
         /* Main Content */
-        #main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+        #main-content, #events-editor { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
         header { padding: 15px 30px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
         .header-left { display: flex; align-items: center; gap: 20px; }
 
@@ -113,8 +113,8 @@
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        input, select { width: 100%; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; transition: 0.2s; }
-        input:focus { border-color: var(--primary); }
+        input, select, textarea { width: 100%; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; transition: 0.2s; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
         /* Auth View */
         #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
@@ -124,82 +124,18 @@
         .status.error { background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid var(--error); }
 
         /* Toast Notification System */
-        #toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 30000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-        }
-
-        .toast-msg {
-            pointer-events: auto;
-            min-width: 300px;
-            max-width: 450px;
-            background: rgba(17, 21, 31, 0.8);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            padding: 16px 20px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .toast-msg::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-        }
-
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 30000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast-msg { pointer-events: auto; min-width: 300px; max-width: 450px; background: rgba(17, 21, 31, 0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 16px 20px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); animation: toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; transition: 0.3s; position: relative; overflow: hidden; }
+        .toast-msg::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
         .toast-msg.success::before { background: var(--success); }
         .toast-msg.error::before { background: var(--error); }
         .toast-msg.info::before { background: var(--primary); }
-
-        .toast-content {
-            flex-grow: 1;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 16px;
-            padding: 4px;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        .toast-content { flex-grow: 1; font-size: 14px; font-weight: 600; }
+        .toast-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .toast-close:hover { color: #fff; }
 
-        @keyframes toast-in {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .toast-out {
-            transform: translateX(120%);
-            opacity: 0;
-        }
+        @keyframes toast-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-out { transform: translateX(120%); opacity: 0; }
 
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 8px; }
@@ -210,7 +146,7 @@
         @media (max-width: 768px) {
             .nav-inner { padding: 0 15px; }
             .nav-links a:not(.btn-login-nav):not(.btn-logout) { display: none; }
-            .sidebar-width { width: 80px; }
+            #sidebar { width: 80px; }
             #sidebar span { display: none; }
             #sidebar .category-item { justify-content: center; }
         }
@@ -227,7 +163,7 @@
         <div class="nav-links">
             <a href="https://novaplaytv.github.io/">INICIO</a>
             <a href="https://novaplaytv.github.io/DEMO-NOVAPLAY/">WEB DEMO</a>
-            <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/" id="navPanelImg" style="display:none;">PANEL IMG</a>
+            <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/" id="navPanelImg" style="display:none;">ICONOS CANALES</a>
             <a href="#" class="btn-login-nav" id="navLogin" onclick="location.reload()">INGRESAR</a>
             <button class="btn-logout" id="navLogout" onclick="cerrarSesion()">SALIR</button>
         </div>
@@ -251,7 +187,6 @@
 </div>
 
 <script>
-    // Session Persistence: Immediate Hide
     if (localStorage.getItem("novaplay_session_token")) {
         document.getElementById("auth-view").classList.add("hidden");
     }
@@ -294,6 +229,81 @@
 
         <div id="channel-list"></div>
     </main>
+
+    <!-- Events Editor Section -->
+    <div id="events-editor" class="hidden" style="flex-grow: 1; padding: 25px; overflow-y: auto;">
+        <div style="max-width: 800px; margin: auto;">
+            <h2 style="margin-bottom: 20px; font-weight: 900;">Editor de Eventos y Avisos</h2>
+
+            <div class="form-section">
+                <h4>Configuración de Eventos (Marquee)</h4>
+                <div class="form-group">
+                    <label>Texto del Marquee (Aviso Deslizante)</label>
+                    <textarea id="event-marquee" placeholder="Escriba el mensaje aquí..."></textarea>
+                </div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select id="event-active">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Versión</label>
+                        <input type="text" id="event-version" readonly style="opacity: 0.6; cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Evento</label>
+                        <input type="date" id="event-date">
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Fecha Hasta</label>
+                        <input type="date" id="event-date-until">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora Inicio</label>
+                        <input type="time" id="event-start-time">
+                    </div>
+                    <div class="form-group">
+                        <label>Hora Fin</label>
+                        <input type="time" id="event-end-time">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h4>V2 Pop-up (Aviso Emergente)</h4>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Título del Pop-up</label>
+                        <input type="text" id="popup-title" placeholder="Ej: Nueva Actualización">
+                    </div>
+                    <div class="form-group">
+                        <label>Pop-up Versión</label>
+                        <input type="text" id="popup-version" readonly style="opacity: 0.6; cursor: not-allowed;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Estado del Pop-up</label>
+                    <select id="popup-active">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Párrafos (Contenido del Pop-up)</label>
+                    <textarea id="popup-paragraphs" style="height: 120px;" placeholder="Ingrese cada párrafo en una línea nueva..."></textarea>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 20px; font-size: 16px;" onclick="saveEventos()">
+                <i class="fas fa-save"></i> 💾 Guardar Eventos
+            </button>
+        </div>
+    </div>
 </div>
 
 <!-- Channel Modal -->
@@ -420,15 +430,17 @@
 <script>
     const API_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales';
     const API_ICON_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-icono';
+    const API_EVENTOS_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-eventos';
+
     let catalogo = [];
-    let currentCategoryIndex = -1; // -1: Todos, -2: Inactivos
+    let eventosData = null;
+    let currentCategoryIndex = -1; // -1: Todos, -2: Inactivos, -3: EVENTOS
     let sessionToken = localStorage.getItem("novaplay_session_token") || "";
 
     function novaToast(message, type = 'success') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
         toast.className = `toast-msg ${type}`;
-
         let icon = 'fa-check-circle';
         if (type === 'error') icon = 'fa-exclamation-circle';
         if (type === 'info') icon = 'fa-info-circle';
@@ -440,51 +452,25 @@
                 <i class="fas fa-times"></i>
             </button>
         `;
-
         container.appendChild(toast);
-
-        setTimeout(() => {
-            if (toast.parentElement) {
-                toast.classList.add('toast-out');
-                setTimeout(() => toast.remove(), 300);
-            }
-        }, 5000);
+        setTimeout(() => { if (toast.parentElement) { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); } }, 5000);
     }
 
-    // --- Auth & API ---
-    function mostrarEstado(id, tipo, mensaje) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.className = "status " + tipo;
-        el.textContent = mensaje;
-        el.style.display = "block";
-    }
-
-    async function fetchJSON(body, usarSesion = false) {
+    async function fetchJSON(body, usarSesion = false, url = API_URL) {
         const headers = { "Content-Type": "application/json" };
         if (usarSesion && sessionToken) headers.Authorization = "Bearer " + sessionToken;
         try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers,
-                body: JSON.stringify(body)
-            });
+            const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
             const data = await response.json().catch(() => ({ error: "Respuesta inválida." }));
             return { response, data };
-        } catch (e) {
-            return { response: { ok: false }, data: { error: "Error de red." } };
-        }
+        } catch (e) { return { response: { ok: false }, data: { error: "Error de red." } }; }
     }
 
     async function restaurarSesion() {
-        const token = localStorage.getItem("novaplay_session_token");
-        if (token) {
-            sessionToken = token;
+        if (sessionToken) {
             UI_MostrarPanel();
             await loadData();
-        } else {
-            UI_MostrarLogin();
-        }
+        } else { UI_MostrarLogin(); }
     }
 
     function UI_MostrarPanel() {
@@ -505,13 +491,10 @@
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
         const btn = document.getElementById("loginButton");
-        const statusId = "loginStatus";
-
         if (!username || !password) return;
 
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFICANDO...';
-
         const { response, data } = await fetchJSON({ action: "login", username, password });
 
         if (response.ok && data.token) {
@@ -520,77 +503,47 @@
             UI_MostrarPanel();
             await loadData();
         } else {
-            mostrarEstado(statusId, "error", "Acceso denegado.");
+            const el = document.getElementById("loginStatus");
+            el.className = "status error";
+            el.textContent = "Acceso denegado.";
+            el.style.display = "block";
             btn.disabled = false;
             btn.textContent = "ENTRAR AL PANEL";
         }
     }
 
-    function cerrarSesion() {
-        localStorage.removeItem("novaplay_session_token");
-        location.reload();
-    }
+    function cerrarSesion() { localStorage.removeItem("novaplay_session_token"); location.reload(); }
 
-    // --- Logo Upload Logic ---
     async function uploadIcon() {
         const fileInput = document.getElementById('file-upload');
         const file = fileInput.files[0];
         if (!file) return;
-
         const iconInput = document.getElementById('ch-icono');
         const originalPlaceholder = iconInput.placeholder;
         iconInput.placeholder = "⚡ SUBIENDO...";
         iconInput.value = "";
-
         const fd = new FormData();
         fd.append("action", "actualizar");
         fd.append("canal", "auto.webp");
         fd.append("imagen", file);
-
         try {
-            const res = await fetch(API_ICON_URL, {
-                method: "POST",
-                headers: { "Authorization": "Bearer " + sessionToken },
-                body: fd
-            });
+            const res = await fetch(API_ICON_URL, { method: "POST", headers: { "Authorization": "Bearer " + sessionToken }, body: fd });
             const data = await res.json();
-            if (res.ok && data.url) {
-                iconInput.value = data.url;
-            } else {
-                novaToast("Error al subir imagen: " + (data.error || "Desconocido"), "error");
-            }
-        } catch (e) {
-            novaToast("Error de red al subir imagen.", "error");
-        } finally {
-            iconInput.placeholder = originalPlaceholder;
-            fileInput.value = "";
-        }
+            if (res.ok && data.url) { iconInput.value = data.url; }
+            else { novaToast("Error al subir imagen: " + (data.error || "Desconocido"), "error"); }
+        } catch (e) { novaToast("Error de red.", "error"); }
+        finally { iconInput.placeholder = originalPlaceholder; fileInput.value = ""; }
     }
 
     async function loadData() {
         const { response, data } = await fetchJSON({ action: "obtener_json" }, true);
         if (response.ok && data.success) {
             catalogo = data.json || [];
-
             catalogo.forEach(cat => {
                 (cat.items || []).forEach(ch => {
-                    if (ch.user && !ch['User-Agent']) {
-                        ch['User-Agent'] = ch.user;
-                        delete ch.user;
-                    }
+                    if (ch.user && !ch['User-Agent']) { ch['User-Agent'] = ch.user; delete ch.user; }
                 });
             });
-
-            try {
-                const deployedRes = await fetch('https://mrghnngupolsgatcmevw.supabase.co/storage/v1/object/public/Novaplay/novaplay.json', { cache: 'no-store' });
-                if (deployedRes.ok) {
-                    const deployedData = await deployedRes.json();
-                    mapNumbers(deployedData);
-                }
-            } catch (e) {
-                console.warn("Could not fetch deployed numbers", e);
-            }
-
             renderCategories();
         } else {
             novaToast('Error al cargar datos: ' + (data.error || 'Sesión expirada'), 'error');
@@ -598,80 +551,82 @@
         }
     }
 
-    function mapNumbers(deployedData) {
-        let deployedItems = [];
-        if (Array.isArray(deployedData)) {
-            if (deployedData.length > 0 && deployedData[0].items) {
-                deployedData.forEach(cat => deployedItems.push(...(cat.items || [])));
-            } else {
-                deployedItems = deployedData;
-            }
-        } else if (deployedData.items) {
-            deployedItems = deployedData.items;
-        }
-
-        const numMap = {};
-        deployedItems.forEach(item => {
-            if (item.name && item.canal) {
-                numMap[item.name.toLowerCase().trim()] = item.canal;
-            }
-        });
-
-        catalogo.forEach(cat => {
-            (cat.items || []).forEach(ch => {
-                const nameKey = (ch.name || "").toLowerCase().trim();
-                if (numMap[nameKey]) {
-                    ch.canal = numMap[nameKey];
-                }
-            });
-        });
-    }
-
     async function saveData() {
-        const { response, data } = await fetchJSON({
-            action: "guardar_json",
-            content: JSON.stringify(catalogo)
-        }, true);
-
-        if (response.ok && data.success) {
-            novaToast('Datos guardados correctamente en Supabase', 'success');
-        } else {
-            novaToast('Error al guardar: ' + (data.error || 'Desconocido'), 'error');
-        }
+        const { response, data } = await fetchJSON({ action: "guardar_json", content: JSON.stringify(catalogo) }, true);
+        if (response.ok && data.success) { novaToast('Datos guardados correctamente', 'success'); }
+        else { novaToast('Error al guardar: ' + (data.error || 'Desconocido'), 'error'); }
     }
 
-    // --- Stats ---
+    // --- Events Editor Logic ---
+    async function loadEventos() {
+        const { response, data } = await fetchJSON({ action: "obtener_eventos" }, true, API_EVENTOS_URL);
+        if (response.ok && data.success) {
+            eventosData = data.eventos || {};
+            renderEventsEditor();
+        } else { novaToast('Error al cargar eventos', 'error'); }
+    }
+
+    function renderEventsEditor() {
+        if (!eventosData) return;
+        document.getElementById('event-marquee').value = eventosData.marquee || '';
+        document.getElementById('event-active').value = String(eventosData.active) || 'false';
+        document.getElementById('event-version').value = eventosData.version || '0';
+        document.getElementById('event-date').value = eventosData.date || '';
+        document.getElementById('event-date-until').value = eventosData.date_until || '';
+        document.getElementById('event-start-time').value = eventosData.start_time || '';
+        document.getElementById('event-end-time').value = eventosData.end_time || '';
+        document.getElementById('popup-title').value = eventosData.popup_title || '';
+        document.getElementById('popup-version').value = eventosData.popup_version || '0';
+        document.getElementById('popup-active').value = String(eventosData.popup_active) || 'false';
+        document.getElementById('popup-paragraphs').value = (eventosData.popup_paragraphs || []).join('\n') || '';
+    }
+
+    async function saveEventos() {
+        const newEventos = {
+            marquee: document.getElementById('event-marquee').value.trim(),
+            active: document.getElementById('event-active').value === 'true',
+            version: (parseInt(document.getElementById('event-version').value) || 0) + 1,
+            date: document.getElementById('event-date').value,
+            date_until: document.getElementById('event-date-until').value,
+            start_time: document.getElementById('event-start-time').value,
+            end_time: document.getElementById('event-end-time').value,
+            popup_title: document.getElementById('popup-title').value.trim(),
+            popup_version: (parseInt(document.getElementById('popup-version').value) || 0) + 1,
+            popup_active: document.getElementById('popup-active').value === 'true',
+            popup_paragraphs: document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '')
+        };
+        const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
+        if (response.ok && data.success) {
+            novaToast('Eventos guardados y versiones incrementadas', 'success');
+            eventosData = newEventos;
+            renderEventsEditor();
+        } else { novaToast('Error al guardar eventos', 'error'); }
+    }
+
     function updateStats() {
-        let active = 0;
-        let inactive = 0;
-        catalogo.forEach(cat => {
-            (cat.items || []).forEach(ch => {
-                if (String(ch.status) === 'true') active++;
-                else inactive++;
-            });
-        });
+        let active = 0, inactive = 0;
+        catalogo.forEach(cat => { (cat.items || []).forEach(ch => { if (String(ch.status) === 'true') active++; else inactive++; }); });
         document.getElementById('active-count').textContent = active;
         document.getElementById('inactive-count').textContent = inactive;
     }
 
-    // --- Renderers ---
     function renderCategories() {
         const list = document.getElementById('category-list');
         list.innerHTML = '';
 
-        // Fixed Item: Todos
-        const todosItem = document.createElement('div');
-        todosItem.className = `category-item ${currentCategoryIndex === -1 ? 'active' : ''}`;
-        todosItem.innerHTML = `<span><i class="fas fa-layer-group"></i> Todos</span>`;
-        todosItem.onclick = () => selectCategory(-1);
-        list.appendChild(todosItem);
+        const items = [
+            { id: -1, title: 'Todos', icon: 'fa-layer-group', special: false },
+            { id: -2, title: 'Inactivos', icon: 'fa-times-circle', special: false },
+            { id: -3, title: 'EVENTOS', icon: 'fa-calendar-alt', special: true }
+        ];
 
-        // Fixed Item: Inactivos
-        const inactivosItem = document.createElement('div');
-        inactivosItem.className = `category-item special ${currentCategoryIndex === -2 ? 'active' : ''}`;
-        inactivosItem.innerHTML = `<span><i class="fas fa-times-circle"></i> Inactivos</span>`;
-        inactivosItem.onclick = () => selectCategory(-2);
-        list.appendChild(inactivosItem);
+        items.forEach(it => {
+            const div = document.createElement('div');
+            div.className = `category-item ${currentCategoryIndex === it.id ? 'active' : ''} ${it.special ? 'special' : ''}`;
+            div.innerHTML = `<span><i class="fas ${it.icon}"></i> ${it.title}</span>`;
+            div.onclick = () => selectCategory(it.id);
+            list.appendChild(div);
+        });
 
         const dragList = document.createElement('div');
         dragList.id = 'draggable-categories';
@@ -687,10 +642,7 @@
                     <button class="btn-icon" onclick="deleteCategory(${index})"><i class="fas fa-trash"></i></button>
                 </div>
             `;
-            item.onclick = (e) => {
-                if (e.target.closest('.actions')) return;
-                selectCategory(index);
-            };
+            item.onclick = (e) => { if (!e.target.closest('.actions')) selectCategory(index); };
             dragList.appendChild(item);
         });
 
@@ -700,62 +652,47 @@
                 onEnd: (evt) => {
                     const movedItem = catalogo.splice(evt.oldIndex, 1)[0];
                     catalogo.splice(evt.newIndex, 0, movedItem);
-                    if (currentCategoryIndex >= 0) {
-                        if (currentCategoryIndex === evt.oldIndex) currentCategoryIndex = evt.newIndex;
-                        else if (currentCategoryIndex > evt.oldIndex && currentCategoryIndex <= evt.newIndex) currentCategoryIndex--;
-                        else if (currentCategoryIndex < evt.oldIndex && currentCategoryIndex >= evt.newIndex) currentCategoryIndex++;
-                    }
                     renderCategories();
                 }
             });
         }
-        renderChannels();
+        if (currentCategoryIndex !== -3) renderChannels();
         updateStats();
     }
 
     function selectCategory(index) {
         currentCategoryIndex = index;
+        if (index === -3) {
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('events-editor').classList.remove('hidden');
+            loadEventos();
+        } else {
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('events-editor').classList.add('hidden');
+            renderChannels();
+        }
         renderCategories();
     }
 
     function renderChannels(filter = '') {
         const list = document.getElementById('channel-list');
         list.innerHTML = '';
-
         let channelsToRender = [];
 
         if (currentCategoryIndex === -1) {
-            catalogo.forEach((cat, catIdx) => {
-                (cat.items || []).forEach((ch, chIdx) => {
-                    channelsToRender.push({ ...ch, catIdx, chIdx, catTitle: cat.title });
-                });
-            });
+            catalogo.forEach((cat, catIdx) => { (cat.items || []).forEach((ch, chIdx) => { channelsToRender.push({ ...ch, catIdx, chIdx, catTitle: cat.title }); }); });
             document.getElementById('new-channel-btn').disabled = true;
-            document.getElementById('new-channel-btn').title = "Seleccione una categoría para agregar canales";
         } else if (currentCategoryIndex === -2) {
-            catalogo.forEach((cat, catIdx) => {
-                (cat.items || []).forEach((ch, chIdx) => {
-                    if (String(ch.status) !== 'true') {
-                        channelsToRender.push({ ...ch, catIdx, chIdx, catTitle: cat.title });
-                    }
-                });
-            });
+            catalogo.forEach((cat, catIdx) => { (cat.items || []).forEach((ch, chIdx) => { if (String(ch.status) !== 'true') channelsToRender.push({ ...ch, catIdx, chIdx, catTitle: cat.title }); }); });
             document.getElementById('new-channel-btn').disabled = true;
-            document.getElementById('new-channel-btn').title = "No se pueden agregar canales en la vista Inactivos";
-        } else {
+        } else if (currentCategoryIndex >= 0) {
             const cat = catalogo[currentCategoryIndex];
-            if (cat) {
-                (cat.items || []).forEach((ch, chIdx) => {
-                    channelsToRender.push({ ...ch, catIdx: currentCategoryIndex, chIdx });
-                });
-            }
+            if (cat) (cat.items || []).forEach((ch, chIdx) => { channelsToRender.push({ ...ch, catIdx: currentCategoryIndex, chIdx }); });
             document.getElementById('new-channel-btn').disabled = false;
-            document.getElementById('new-channel-btn').title = "";
         }
 
         channelsToRender.forEach((ch) => {
             if (filter && !ch.name.toLowerCase().includes(filter.toLowerCase())) return;
-
             const card = document.createElement('div');
             card.className = 'channel-card' + (currentCategoryIndex < 0 ? ' no-drag' : '');
             card.innerHTML = `
@@ -765,7 +702,7 @@
                     <p>#${ch.canal || '?'} | ${String(ch.status) === 'true' ? 'Activo' : 'Inactivo'}</p>
                 </div>
                 ${currentCategoryIndex < 0 ? `<span class="channel-cat-tag">${ch.catTitle}</span>` : ''}
-                <button class="btn-icon" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.4); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0.8;" onclick="openChannelModal(${ch.chIdx}, ${ch.catIdx})">
+                <button class="btn-icon" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.4); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 1; z-index: 10;" onclick="openChannelModal(${ch.chIdx}, ${ch.catIdx})">
                     <i class="fas fa-edit"></i>
                 </button>
             `;
@@ -788,55 +725,33 @@
         updateStats();
     }
 
-    function filterChannels() {
-        const query = document.getElementById('channel-search').value;
-        renderChannels(query);
-    }
-
-    // --- CRUD Categories ---
+    function filterChannels() { renderChannels(document.getElementById('channel-search').value); }
     function openCategoryModal(index = -1) {
         document.getElementById('edit-category-index').value = index;
         document.getElementById('cat-title').value = index >= 0 ? catalogo[index].title : '';
         document.getElementById('category-modal').style.display = 'flex';
     }
-
     function saveCategory() {
         const index = parseInt(document.getElementById('edit-category-index').value);
         const title = document.getElementById('cat-title').value.trim();
         if (!title) return;
-
-        if (index >= 0) {
-            catalogo[index].title = title;
-        } else {
-            catalogo.push({ title, items: [] });
-            currentCategoryIndex = catalogo.length - 1;
-        }
+        if (index >= 0) { catalogo[index].title = title; }
+        else { catalogo.push({ title, items: [] }); currentCategoryIndex = catalogo.length - 1; }
         closeModal('category-modal');
         renderCategories();
     }
+    function deleteCategory(index) { if (confirm('¿Eliminar esta categoría?')) { catalogo.splice(index, 1); currentCategoryIndex = -1; renderCategories(); } }
 
-    function deleteCategory(index) {
-        if (confirm('¿Eliminar esta categoría y todos sus canales?')) {
-            catalogo.splice(index, 1);
-            currentCategoryIndex = -1;
-            renderCategories();
-        }
-    }
-
-    // --- CRUD Channels ---
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
         if (catalogo.length === 0) return novaToast('Cree una categoría primero', 'info');
         if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categoría primero', 'info');
-
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
-
         const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
             name: '', icono: '', canal: '', status: 'true', NSFW: 'NO',
             url: '', url2: '', Referer: '', Origin: '', 'User-Agent': '',
             drm_license_uri: '', drm_license_uri2: ''
         };
-
         document.getElementById('ch-name').value = ch.name || '';
         document.getElementById('ch-icono').value = ch.icono || '';
         document.getElementById('ch-canal').value = ch.canal || '';
@@ -846,10 +761,9 @@
         document.getElementById('ch-url2').value = ch.url2 || '';
         document.getElementById('ch-referer').value = ch.Referer || '';
         document.getElementById('ch-origin').value = ch.Origin || '';
-        document.getElementById('ch-user').value = ch['User-Agent'] || ch.user || '';
+        document.getElementById('ch-user').value = ch['User-Agent'] || '';
         document.getElementById('ch-drm1').value = ch.drm_license_uri || '';
         document.getElementById('ch-drm2').value = ch.drm_license_uri2 || '';
-
         document.getElementById('modal-title').innerText = chIndex >= 0 ? 'Editar Canal' : 'Nuevo Canal';
         document.getElementById('channel-modal').style.display = 'flex';
     }
@@ -857,9 +771,7 @@
     function saveChannel() {
         const chIndex = parseInt(document.getElementById('edit-channel-index').value);
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
-
         const existingCh = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {};
-
         const ch = {
             ...existingCh,
             name: document.getElementById('ch-name').value.trim(),
@@ -875,14 +787,9 @@
             drm_license_uri: document.getElementById('ch-drm1').value.trim(),
             drm_license_uri2: document.getElementById('ch-drm2').value.trim()
         };
-
-        if (!ch.name) return novaToast('El nombre es obligatorio', 'error');
-
-        if (chIndex >= 0) {
-            catalogo[catIndex].items[chIndex] = ch;
-        } else {
-            catalogo[catIndex].items.push(ch);
-        }
+        if (!ch.name) return novaToast('Nombre obligatorio', 'error');
+        if (chIndex >= 0) { catalogo[catIndex].items[chIndex] = ch; }
+        else { catalogo[catIndex].items.push(ch); }
         closeModal('channel-modal');
         renderChannels();
     }
@@ -890,19 +797,9 @@
     function deleteChannel() {
         const chIndex = parseInt(document.getElementById('edit-channel-index').value);
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
-
-        if (chIndex >= 0 && confirm('¿Eliminar este canal?')) {
-            catalogo[catIndex].items.splice(chIndex, 1);
-            closeModal('channel-modal');
-            renderChannels();
-        }
+        if (chIndex >= 0 && confirm('¿Eliminar canal?')) { catalogo[catIndex].items.splice(chIndex, 1); closeModal('channel-modal'); renderChannels(); }
     }
-
-    function closeModal(id) {
-        document.getElementById(id).style.display = 'none';
-    }
-
-    // Init
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
     restaurarSesion();
 </script>
