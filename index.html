@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,7 @@
             --danger: #ef4444;
             --success: #22c55e;
             --input-bg: #262631;
+            --error: #ef4444;
         }
 
         * {
@@ -197,7 +198,7 @@
 
         .channel-info p {
             font-size: 0.8rem;
-            color: var(--text-dim);
+            color: var(--text-main);
         }
 
         /* --- Forms & Modals --- */
@@ -294,8 +295,11 @@
 
         .btn-primary { background: var(--accent); color: white; }
         .btn-primary:hover { background: var(--accent-hover); }
+        .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
         .btn-ghost { background: transparent; color: var(--text-main); }
         .btn-ghost:hover { background: var(--border); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { opacity: 0.9; }
 
         /* --- Auth View --- */
         #auth-view {
@@ -316,6 +320,18 @@
             border-radius: 20px;
             text-align: center;
         }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            text-align: center;
+        }
+        .status.success { display: block; background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid var(--success); }
+        .status.error { display: block; background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid var(--error); }
 
         /* Sortable ghost class */
         .sortable-ghost {
@@ -338,10 +354,15 @@
             <h2 style="color: var(--text-bright); margin-bottom: 8px;">NovaPlay</h2>
             <p style="margin-bottom: 32px;">Panel de Administración</p>
             <div class="form-group" style="text-align: left;">
-                <label>Clave de Acceso</label>
-                <input type="password" id="auth-token" placeholder="Ingrese el token">
+                <label>Usuario</label>
+                <input type="text" id="username" placeholder="Ingrese su usuario" autocomplete="username">
             </div>
-            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">Acceder</button>
+            <div class="form-group" style="text-align: left;">
+                <label>Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button class="btn btn-primary" id="loginButton" style="width: 100%;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
+            <div id="loginStatus" class="status"></div>
         </div>
     </div>
 
@@ -365,12 +386,15 @@
                 <i class="fas fa-search"></i>
                 <input type="text" id="channel-search" placeholder="Buscar canal..." oninput="filterChannels()">
             </div>
-            <div class="header-actions">
+            <div class="header-actions" style="display: flex; gap: 8px;">
                 <button class="btn btn-primary" onclick="openChannelModal()">
                     <i class="fas fa-plus"></i> Nuevo Canal
                 </button>
                 <button class="btn btn-ghost" onclick="saveData()">
                     <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+                <button class="btn btn-danger" onclick="cerrarSesion()" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
         </header>
@@ -494,51 +518,88 @@
         const API_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales';
         let categories = [];
         let currentCategoryIndex = 0;
-        let authToken = '';
+        let sessionToken = localStorage.getItem("novaplay_session_token") || "";
 
         // --- Auth & API ---
-        async function handleLogin() {
-            const token = document.getElementById('auth-token').value;
-            if (!token) return alert('Ingrese un token');
+        function mostrarEstado(id, tipo, mensaje) {
+            const el = document.getElementById(id);
+            el.className = "status " + tipo;
+            el.textContent = mensaje;
+            el.style.display = "block";
+        }
 
-            authToken = token;
-            const res = await apiCall('verificar_sesion');
-            if (res.success) {
-                document.getElementById('auth-view').classList.add('hidden');
-                loadData();
+        async function fetchJSON(body, usarSesion = false) {
+            const headers = { "Content-Type": "application/json" };
+            if (usarSesion && sessionToken) headers.Authorization = "Bearer " + sessionToken;
+            try {
+                const response = await fetch(API_URL, { method: "POST", headers, body: JSON.stringify(body) });
+                const data = await response.json().catch(() => ({ error: "Respuesta inválida." }));
+                return { response, data };
+            } catch (e) { return { response: { ok: false }, data: { error: "Error de red." } }; }
+        }
+
+        async function restaurarSesion() {
+            if (!sessionToken) return;
+            const { response } = await fetchJSON({ action: "verificar_sesion" }, true);
+            if (response.ok) {
+                UI_MostrarPanel();
+                await loadData();
             } else {
-                alert('Token inválido');
+                cerrarSesion();
             }
         }
 
-        async function apiCall(action, payload = {}) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, token: authToken, ...payload })
-                });
-                return await response.json();
-            } catch (e) {
-                console.error(e);
-                return { success: false, error: e.message };
+        function UI_MostrarPanel() {
+            document.getElementById("auth-view").classList.add("hidden");
+        }
+
+        async function iniciarSesion() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const btn = document.getElementById("loginButton");
+            const statusId = "loginStatus";
+
+            if (!username || !password) return;
+
+            btn.disabled = true;
+            btn.textContent = "VERIFICANDO...";
+
+            const { response, data } = await fetchJSON({ action: "login", username, password });
+
+            if (response.ok && data.token) {
+                sessionToken = data.token;
+                localStorage.setItem("novaplay_session_token", sessionToken);
+                UI_MostrarPanel();
+                await loadData();
+            } else {
+                mostrarEstado(statusId, "error", "Acceso denegado.");
+                btn.disabled = false;
+                btn.textContent = "ENTRAR AL PANEL";
             }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem("novaplay_session_token");
+            location.reload();
         }
 
         async function loadData() {
-            const res = await apiCall('obtener_json');
-            if (res.success) {
-                categories = res.data || [];
+            const { response, data } = await fetchJSON({ action: "obtener_json" }, true);
+            if (response.ok) {
+                categories = data || [];
                 renderCategories();
+            } else {
+                alert('Error al cargar datos: ' + (data.error || 'Sesión expirada'));
+                if (response.status === 401) cerrarSesion();
             }
         }
 
         async function saveData() {
-            const res = await apiCall('guardar_json', { data: categories });
-            if (res.success) {
+            const { response, data } = await fetchJSON({ action: "guardar_json", data: categories }, true);
+            if (response.ok) {
                 alert('Datos guardados correctamente');
             } else {
-                alert('Error al guardar: ' + res.error);
+                alert('Error al guardar: ' + (data.error || 'Desconocido'));
             }
         }
 
@@ -714,6 +775,10 @@
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
         }
+
+        // Initialize
+        document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
+        restaurarSesion();
 
     </script>
 </body>
