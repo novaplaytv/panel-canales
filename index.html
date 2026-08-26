@@ -54,6 +54,20 @@
         .btn-login-nav:hover, .btn-logout:hover { transform: scale(1.05); background: var(--primary-hover); }
         .btn-logout { background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
+        .lang-toggle {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .app-container { display: flex; height: calc(100% - var(--nav-height)); margin-top: var(--nav-height); overflow: hidden; }
 
         /* Sidebar */
@@ -85,6 +99,7 @@
         /* Channel Card */
         .channel-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 15px; display: flex; align-items: center; gap: 15px; cursor: move; transition: 0.2s; position: relative; min-height: 100px; }
         .channel-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .channel-card.selected { border-color: var(--primary); background: rgba(229, 9, 20, 0.05); }
         .channel-card.no-drag { cursor: default; }
         .channel-logo { width: 50px; height: 50px; border-radius: 12px; background: #000; object-fit: contain; border: 1px solid var(--border); }
         .channel-info { overflow: hidden; flex-grow: 1; }
@@ -92,8 +107,43 @@
         .channel-info p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .channel-cat-tag { position: absolute; top: 10px; right: 10px; font-size: 9px; background: var(--input-bg); padding: 3px 8px; border-radius: 6px; color: var(--primary); font-weight: 900; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05); pointer-events: none; }
 
+        .channel-checkbox {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            z-index: 5;
+            opacity: 0.3;
+            transition: 0.2s;
+        }
+        .channel-card:hover .channel-checkbox, .channel-checkbox:checked { opacity: 1; }
+
+        /* Bulk Bar */
+        .bulk-bar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(17, 21, 31, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 15000;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+        .bulk-bar.active { transform: translateX(-50%) translateY(0); }
+        .bulk-info { font-size: 14px; font-weight: 700; color: var(--primary); border-right: 1px solid var(--border); padding-right: 20px; }
+
         /* Buttons */
-        .btn { padding: 12px 20px; border-radius: 12px; border: 0; cursor: pointer; font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn { padding: 12px 20px; border-radius: 12px; border: 0; cursor: pointer; font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; white-space: nowrap; }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .btn-primary:disabled { background: var(--border); cursor: not-allowed; transform: none; }
@@ -115,6 +165,13 @@
         label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         input, select, textarea { width: 100%; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; transition: 0.2s; font-family: inherit; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+        /* Icon Browser Styles */
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; padding: 10px; }
+        .icon-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px; cursor: pointer; transition: 0.2s; text-align: center; }
+        .icon-item:hover { border-color: var(--primary); transform: scale(1.05); }
+        .icon-item img { width: 100%; height: auto; border-radius: 6px; max-height: 60px; object-fit: contain; }
+        .icon-item span { display: block; font-size: 10px; color: var(--text-muted); margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         /* Auth View */
         #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
@@ -149,6 +206,7 @@
             #sidebar { width: 80px; }
             #sidebar span { display: none; }
             #sidebar .category-item { justify-content: center; }
+            .bulk-bar { width: 90%; flex-wrap: wrap; justify-content: center; bottom: 10px; }
         }
     </style>
 </head>
@@ -161,28 +219,31 @@
             NOVAPLAY
         </a>
         <div class="nav-links">
-            <a href="https://novaplaytv.github.io/">INICIO</a>
-            <a href="https://novaplaytv.github.io/DEMO-NOVAPLAY/">WEB DEMO</a>
-            <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/" id="navPanelImg" style="display:none;">ICONOS</a>
-            <a href="#" class="active" id="navPanelCanales" style="display:none;">CANALES</a>
-            <a href="#" class="btn-login-nav" id="navLogin" onclick="location.reload()">INGRESAR</a>
-            <button class="btn-logout" id="navLogout" onclick="cerrarSesion()">SALIR</button>
+            <button class="lang-toggle" onclick="toggleLanguage()">
+                <i class="fas fa-globe"></i> <span id="lang-label">ES</span>
+            </button>
+            <a href="https://novaplaytv.github.io/" data-i18n="nav_home">INICIO</a>
+            <a href="https://novaplaytv.github.io/DEMO-NOVAPLAY/" data-i18n="nav_demo">WEB DEMO</a>
+            <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/" id="navPanelImg" style="display:none;" data-i18n="nav_icons">ICONOS</a>
+            <a href="#" class="active" id="navPanelCanales" style="display:none;" data-i18n="nav_channels">CANALES</a>
+            <a href="#" class="btn-login-nav" id="navLogin" onclick="location.reload()" data-i18n="nav_login">INGRESAR</a>
+            <button class="btn-logout" id="navLogout" onclick="cerrarSesion()" data-i18n="nav_logout">SALIR</button>
         </div>
     </div>
 </nav>
 
 <div id="auth-view">
     <div class="auth-card">
-        <h2 style="margin-bottom:30px; font-weight:900; font-size: 28px;">Acceso al Panel</h2>
+        <h2 style="margin-bottom:30px; font-weight:900; font-size: 28px;" data-i18n="auth_title">Acceso al Panel</h2>
         <div class="form-group" style="text-align: left;">
-            <label>Usuario</label>
+            <label data-i18n="label_user">Usuario</label>
             <input type="text" id="username" placeholder="Usuario" autocomplete="username">
         </div>
         <div class="form-group" style="text-align: left;">
-            <label>Contraseña</label>
+            <label data-i18n="label_password">Contraseña</label>
             <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
         </div>
-        <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; margin-top:10px; padding: 18px;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
+        <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; margin-top:10px; padding: 18px;" onclick="iniciarSesion()" data-i18n="btn_login_action">ENTRAR AL PANEL</button>
         <div id="loginStatus" class="status"></div>
     </div>
 </div>
@@ -198,7 +259,7 @@
         <div id="category-list"></div>
         <div style="padding: 20px; border-top: 1px solid var(--border);">
             <button class="btn btn-ghost" style="width:100%; justify-content: center;" onclick="openCategoryModal()">
-                <i class="fas fa-plus-circle"></i> Nueva Categoría
+                <i class="fas fa-plus-circle"></i> <span data-i18n="btn_new_category">Nueva Categoría</span>
             </button>
         </div>
     </aside>
@@ -207,23 +268,26 @@
         <header>
             <div class="header-left">
                 <div class="search-box">
-                    <input type="text" id="channel-search" placeholder="Buscar canal..." oninput="filterChannels()">
+                    <input type="text" id="channel-search" placeholder="Buscar canal..." oninput="filterChannels()" data-i18n-placeholder="search_placeholder">
                 </div>
                 <div class="stats-container">
                     <div class="stat-chip success">
-                        <i class="fas fa-check-circle"></i> <span id="active-count">0</span> Activos
+                        <i class="fas fa-check-circle"></i> <span id="active-count">0</span> <span data-i18n="stat_active">Activos</span>
                     </div>
                     <div class="stat-chip inactive">
-                        <i class="fas fa-times-circle"></i> <span id="inactive-count">0</span> Inactivos
+                        <i class="fas fa-times-circle"></i> <span id="inactive-count">0</span> <span data-i18n="stat_inactive">Inactivos</span>
                     </div>
                 </div>
             </div>
             <div style="display:flex; gap:12px;">
                 <button class="btn btn-primary" id="new-channel-btn" onclick="openChannelModal()">
-                    <i class="fas fa-plus"></i> Nuevo Canal
+                    <i class="fas fa-plus"></i> <span data-i18n="btn_new_channel">Nuevo Canal</span>
                 </button>
-                <button class="btn btn-ghost" onclick="saveData()">
-                    <i class="fas fa-save"></i> Guardar Cambios
+                <button class="btn btn-ghost" onclick="downloadBackup()">
+                    <i class="fas fa-download"></i> <span data-i18n="btn_backup">Backup</span>
+                </button>
+                <button class="btn btn-primary" onclick="saveData()">
+                    <i class="fas fa-save"></i> <span data-i18n="btn_save">Guardar Cambios</span>
                 </button>
             </div>
         </header>
@@ -234,74 +298,74 @@
     <!-- Events Editor Section -->
     <div id="events-editor" class="hidden" style="flex-grow: 1; padding: 25px; overflow-y: auto;">
         <div style="max-width: 800px; margin: auto;">
-            <h2 style="margin-bottom: 20px; font-weight: 900;">Editor de Eventos y Avisos</h2>
+            <h2 style="margin-bottom: 20px; font-weight: 900;" data-i18n="events_title">Editor de Eventos y Avisos</h2>
 
             <div class="form-section">
-                <h4>Configuración de Notificaciones</h4>
+                <h4 data-i18n="section_notifications">Configuración de Notificaciones</h4>
                 <div class="form-group">
-                    <label>Texto de la Notificación</label>
+                    <label data-i18n="label_notification_text">Texto de la Notificación</label>
                     <textarea id="event-marquee" placeholder="Escriba el mensaje aquí..."></textarea>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
-                        <label>Estado</label>
+                        <label data-i18n="label_status">Estado</label>
                         <select id="event-active">
-                            <option value="true">Activo</option>
-                            <option value="false">Inactivo</option>
+                            <option value="true" data-i18n="opt_active">Activo</option>
+                            <option value="false" data-i18n="opt_inactive">Inactivo</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Versión</label>
+                        <label data-i18n="label_version">Versión</label>
                         <input type="text" id="event-version" readonly style="opacity: 0.6; cursor: not-allowed;">
                     </div>
                     <div class="form-group">
-                        <label>Fecha Evento</label>
+                        <label data-i18n="label_event_date">Fecha Evento</label>
                         <input type="date" id="event-date">
                     </div>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
-                        <label>Fecha Hasta</label>
+                        <label data-i18n="label_date_until">Fecha Hasta</label>
                         <input type="date" id="event-date-until">
                     </div>
                     <div class="form-group">
-                        <label>Hora Inicio</label>
+                        <label data-i18n="label_start_time">Hora Inicio</label>
                         <input type="time" id="event-start-time">
                     </div>
                     <div class="form-group">
-                        <label>Hora Fin</label>
+                        <label data-i18n="label_end_time">Hora Fin</label>
                         <input type="time" id="event-end-time">
                     </div>
                 </div>
             </div>
 
             <div class="form-section">
-                <h4>V2 Pop-up (Aviso Emergente)</h4>
+                <h4 data-i18n="section_popup">V2 Pop-up (Aviso Emergente)</h4>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>Título del Pop-up</label>
+                        <label data-i18n="label_popup_title">Título del Pop-up</label>
                         <input type="text" id="popup-title" placeholder="Ej: Nueva Actualización">
                     </div>
                     <div class="form-group">
-                        <label>Pop-up Versión</label>
+                        <label data-i18n="label_popup_version">Pop-up Versión</label>
                         <input type="text" id="popup-version" readonly style="opacity: 0.6; cursor: not-allowed;">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Estado del Pop-up</label>
+                    <label data-i18n="label_popup_status">Estado del Pop-up</label>
                     <select id="popup-active">
-                        <option value="true">Activo</option>
-                        <option value="false">Inactivo</option>
+                        <option value="true" data-i18n="opt_active">Activo</option>
+                        <option value="false" data-i18n="opt_inactive">Inactivo</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Párrafos (Contenido del Pop-up)</label>
+                    <label data-i18n="label_popup_content">Párrafos (Contenido del Pop-up)</label>
                     <textarea id="popup-paragraphs" style="height: 120px;" placeholder="Ingrese cada párrafo en una línea nueva..."></textarea>
                 </div>
             </div>
 
             <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 20px; font-size: 16px;" onclick="saveEventos()">
-                <i class="fas fa-save"></i> 💾 Guardar Eventos
+                <i class="fas fa-save"></i> 💾 <span data-i18n="btn_save_events">Guardar Eventos</span>
             </button>
         </div>
     </div>
@@ -311,7 +375,7 @@
 <div id="channel-modal" class="modal-overlay">
     <div class="modal">
         <div class="modal-header">
-            <h2 id="modal-title" style="font-weight:900;">Editar Canal</h2>
+            <h2 id="modal-title" style="font-weight:900;" data-i18n="modal_channel_title">Editar Canal</h2>
             <button class="btn-icon" onclick="closeModal('channel-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -319,17 +383,20 @@
             <input type="hidden" id="edit-channel-cat-index">
 
             <div class="form-section">
-                <h4>Información General</h4>
+                <h4 data-i18n="section_general">Información General</h4>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>Nombre del Canal</label>
+                        <label data-i18n="label_channel_name">Nombre del Canal</label>
                         <input type="text" id="ch-name" placeholder="Ej: HBO HD">
                     </div>
                     <div class="form-group">
-                        <label>Logo URL (icono)</label>
+                        <label data-i18n="label_logo_url">Logo URL (icono)</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" id="ch-icono" placeholder="https://...">
-                            <button class="btn btn-ghost" onclick="document.getElementById('file-upload').click()" title="Subir de PC">
+                            <button class="btn btn-ghost" onclick="openIconBrowser()" data-i18n-title="btn_search_gallery_title">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-ghost" onclick="document.getElementById('file-upload').click()" data-i18n-title="btn_upload_pc_title">
                                 <i class="fas fa-upload"></i>
                             </button>
                             <input type="file" id="file-upload" accept="image/*" style="display:none;" onchange="uploadIcon()">
@@ -338,14 +405,14 @@
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
-                        <label>Número de Canal (canal)</label>
+                        <label data-i18n="label_channel_number">Número de Canal (canal)</label>
                         <input type="text" id="ch-canal" placeholder="Ej: 101">
                     </div>
                     <div class="form-group">
-                        <label>Estado (status)</label>
+                        <label data-i18n="label_status">Estado (status)</label>
                         <select id="ch-status">
-                            <option value="true">Activo</option>
-                            <option value="false">Inactivo</option>
+                            <option value="true" data-i18n="opt_active">Activo</option>
+                            <option value="false" data-i18n="opt_inactive">Inactivo</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -359,21 +426,21 @@
             </div>
 
             <div class="form-section">
-                <h4>Fuentes de Stream</h4>
+                <h4 data-i18n="section_streams">Fuentes de Stream</h4>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>URL Principal</label>
+                        <label data-i18n="label_primary_url">URL Principal</label>
                         <input type="text" id="ch-url" placeholder="http://...">
                     </div>
                     <div class="form-group">
-                        <label>URL 2</label>
+                        <label data-i18n="label_secondary_url">URL 2</label>
                         <input type="text" id="ch-url2" placeholder="http://...">
                     </div>
                 </div>
             </div>
 
             <div class="form-section">
-                <h4>Configuración Avanzada</h4>
+                <h4 data-i18n="section_advanced">Configuración Avanzada</h4>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>Referer</label>
@@ -401,8 +468,8 @@
             </div>
 
             <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 10px;">
-                <button class="btn btn-danger" onclick="deleteChannel()">Eliminar</button>
-                <button class="btn btn-primary" onclick="saveChannel()">Guardar Canal</button>
+                <button class="btn btn-danger" onclick="deleteChannel()" data-i18n="btn_delete">Eliminar</button>
+                <button class="btn btn-primary" onclick="saveChannel()" data-i18n="btn_save_channel">Guardar Canal</button>
             </div>
         </div>
     </div>
@@ -412,18 +479,52 @@
 <div id="category-modal" class="modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header">
-            <h2 style="font-weight:900;">Categoría</h2>
+            <h2 style="font-weight:900;" data-i18n="modal_category_title">Categoría</h2>
             <button class="btn-icon" onclick="closeModal('category-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="edit-category-index">
             <div class="form-group">
-                <label>Nombre de la Categoría (title)</label>
+                <label data-i18n="label_category_name">Nombre de la Categoría (title)</label>
                 <input type="text" id="cat-title" placeholder="Ej: Deportes">
             </div>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px;" onclick="saveCategory()">Guardar</button>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px;" onclick="saveCategory()" data-i18n="btn_save">Guardar</button>
         </div>
     </div>
+</div>
+
+<!-- Icon Browser Modal -->
+<div id="icon-modal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 style="font-weight:900;" data-i18n="modal_icons_title">Galería de Iconos</h2>
+            <button class="btn-icon" onclick="closeModal('icon-modal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="icon-browser-body">
+            <div style="text-align: center; padding: 40px;" id="icon-loader">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 10px;" data-i18n="msg_loading_icons">Cargando iconos...</p>
+            </div>
+            <div class="icon-grid" id="icon-grid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Actions Bar -->
+<div id="bulk-bar" class="bulk-bar">
+    <div class="bulk-info" id="bulk-count">0 Seleccionados</div>
+    <button class="btn btn-ghost" onclick="bulkMoveCategory()">
+        <i class="fas fa-exchange-alt"></i> <span data-i18n="bulk_move">Mover</span>
+    </button>
+    <button class="btn btn-ghost" onclick="bulkToggleStatus()">
+        <i class="fas fa-power-off"></i> <span data-i18n="bulk_status">Estado</span>
+    </button>
+    <button class="btn btn-danger" onclick="bulkDelete()">
+        <i class="fas fa-trash"></i> <span data-i18n="bulk_delete">Eliminar</span>
+    </button>
+    <button class="btn-icon" onclick="clearSelection()" style="margin-left: 10px;">
+        <i class="fas fa-times"></i>
+    </button>
 </div>
 
 <div id="toast-container"></div>
@@ -432,11 +533,82 @@
     const API_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales';
     const API_ICON_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-icono';
     const API_EVENTOS_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-eventos';
+    const GITHUB_ICONS_API = 'https://api.github.com/repos/novaplaytv/novaimg/contents/icons';
 
     let catalogo = [];
     let eventosData = null;
     let currentCategoryIndex = -1; // -1: Todos, -2: Inactivos, -3: EVENTOS
     let sessionToken = localStorage.getItem("novaplay_session_token") || "";
+    let currentLang = localStorage.getItem("nova_lang") || "ES";
+    let selectedChannels = []; // Array of {catIdx, chIdx}
+
+    const translations = {
+        ES: {
+            nav_home: "INICIO", nav_demo: "WEB DEMO", nav_icons: "ICONOS", nav_channels: "CANALES", nav_login: "INGRESAR", nav_logout: "SALIR",
+            auth_title: "Acceso al Panel", label_user: "Usuario", label_password: "Contraseña", btn_login_action: "ENTRAR AL PANEL",
+            btn_new_category: "Nueva Categoría", btn_new_channel: "Nuevo Canal", btn_backup: "Backup", btn_save: "Guardar Cambios",
+            search_placeholder: "Buscar canal...", stat_active: "Activos", stat_inactive: "Inactivos",
+            events_title: "Editor de Eventos y Avisos", section_notifications: "Configuración de Notificaciones", label_notification_text: "Texto de la Notificación",
+            label_status: "Estado", label_version: "Versión", label_event_date: "Fecha Evento", label_date_until: "Fecha Hasta", label_start_time: "Hora Inicio", label_end_time: "Hora Fin",
+            opt_active: "Activo", opt_inactive: "Inactivo", section_popup: "V2 Pop-up (Aviso Emergente)", label_popup_title: "Título del Pop-up",
+            label_popup_version: "Pop-up Versión", label_popup_status: "Estado del Pop-up", label_popup_content: "Párrafos (Contenido del Pop-up)", btn_save_events: "Guardar Eventos",
+            modal_channel_title: "Editar Canal", section_general: "Información General", label_channel_name: "Nombre del Canal", label_logo_url: "Logo URL (icono)",
+            btn_search_gallery_title: "Buscar en Galería", btn_upload_pc_title: "Subir de PC", label_channel_number: "Número de Canal",
+            section_streams: "Fuentes de Stream", label_primary_url: "URL Principal", label_secondary_url: "URL 2", section_advanced: "Configuración Avanzada",
+            btn_delete: "Eliminar", btn_save_channel: "Guardar Canal", modal_category_title: "Categoría", label_category_name: "Nombre de la Categoría",
+            modal_icons_title: "Galería de Iconos", msg_loading_icons: "Cargando iconos...", bulk_move: "Mover", bulk_status: "Estado", bulk_delete: "Eliminar",
+            msg_confirm_delete_cat: "¿Eliminar esta categoría?", msg_confirm_delete_ch: "¿Eliminar canal?", msg_confirm_delete_bulk: "¿Eliminar los canales seleccionados?",
+            msg_no_cat: "Cree una categoría primero", msg_select_cat: "Seleccione una categoría primero", msg_save_ok: "Datos guardados correctamente",
+            msg_save_err: "Error al guardar", msg_loading_err: "Error al cargar datos", msg_no_changes: "No se detectaron cambios",
+            msg_events_ok: "Notificaciones actualizadas con éxito", msg_events_err: "Error al guardar notificaciones",
+            bulk_selected: "Seleccionados", msg_name_req: "Nombre obligatorio", msg_upload_err: "Error al subir imagen"
+        },
+        EN: {
+            nav_home: "HOME", nav_demo: "WEB DEMO", nav_icons: "ICONS", nav_channels: "CHANNELS", nav_login: "LOGIN", nav_logout: "LOGOUT",
+            auth_title: "Panel Access", label_user: "Username", label_password: "Password", btn_login_action: "ENTER PANEL",
+            btn_new_category: "New Category", btn_new_channel: "New Channel", btn_backup: "Backup", btn_save: "Save Changes",
+            search_placeholder: "Search channel...", stat_active: "Active", stat_inactive: "Inactive",
+            events_title: "Events & Notices Editor", section_notifications: "Notification Settings", label_notification_text: "Notification Text",
+            label_status: "Status", label_version: "Version", label_event_date: "Event Date", label_date_until: "Date Until", label_start_time: "Start Time", label_end_time: "End Time",
+            opt_active: "Active", opt_inactive: "Inactive", section_popup: "V2 Pop-up (Emerging Notice)", label_popup_title: "Pop-up Title",
+            label_popup_version: "Pop-up Version", label_popup_status: "Pop-up Status", label_popup_content: "Paragraphs (Pop-up Content)", btn_save_events: "Save Events",
+            modal_channel_title: "Edit Channel", section_general: "General Information", label_channel_name: "Channel Name", label_logo_url: "Logo URL (icon)",
+            btn_search_gallery_title: "Search in Gallery", btn_upload_pc_title: "Upload from PC", label_channel_number: "Channel Number",
+            section_streams: "Stream Sources", label_primary_url: "Primary URL", label_secondary_url: "Secondary URL", section_advanced: "Advanced Config",
+            btn_delete: "Delete", btn_save_channel: "Save Channel", modal_category_title: "Category", label_category_name: "Category Name",
+            modal_icons_title: "Icon Gallery", msg_loading_icons: "Loading icons...", bulk_move: "Move", bulk_status: "Status", bulk_delete: "Delete",
+            msg_confirm_delete_cat: "Delete this category?", msg_confirm_delete_ch: "Delete channel?", msg_confirm_delete_bulk: "Delete selected channels?",
+            msg_no_cat: "Create a category first", msg_select_cat: "Select a category first", msg_save_ok: "Data saved successfully",
+            msg_save_err: "Error saving data", msg_loading_err: "Error loading data", msg_no_changes: "No changes detected",
+            msg_events_ok: "Notifications updated successfully", msg_events_err: "Error saving notifications",
+            bulk_selected: "Selected", msg_name_req: "Name required", msg_upload_err: "Error uploading image"
+        }
+    };
+
+    function t(key) { return translations[currentLang][key] || key; }
+
+    function updateLanguageUI() {
+        document.getElementById('lang-label').textContent = currentLang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.textContent = t(key);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            el.placeholder = t(key);
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            const key = el.getAttribute('data-i18n-title');
+            el.title = t(key);
+        });
+    }
+
+    function toggleLanguage() {
+        currentLang = currentLang === "ES" ? "EN" : "ES";
+        localStorage.setItem("nova_lang", currentLang);
+        updateLanguageUI();
+        renderCategories(); // To update category list if needed
+    }
 
     function novaToast(message, type = 'success') {
         const container = document.getElementById('toast-container');
@@ -468,6 +640,7 @@
     }
 
     async function restaurarSesion() {
+        updateLanguageUI();
         if (sessionToken) {
             UI_MostrarPanel();
             await loadData();
@@ -511,7 +684,7 @@
             el.textContent = "Acceso denegado.";
             el.style.display = "block";
             btn.disabled = false;
-            btn.textContent = "ENTRAR AL PANEL";
+            btn.textContent = t('btn_login_action');
         }
     }
 
@@ -533,7 +706,7 @@
             const res = await fetch(API_ICON_URL, { method: "POST", headers: { "Authorization": "Bearer " + sessionToken }, body: fd });
             const data = await res.json();
             if (res.ok && data.url) { iconInput.value = data.url; }
-            else { novaToast("Error al subir imagen: " + (data.error || "Desconocido"), "error"); }
+            else { novaToast(t('msg_upload_err') + ": " + (data.error || "Desconocido"), "error"); }
         } catch (e) { novaToast("Error de red.", "error"); }
         finally { iconInput.placeholder = originalPlaceholder; fileInput.value = ""; }
     }
@@ -549,15 +722,25 @@
             });
             renderCategories();
         } else {
-            novaToast('Error al cargar datos: ' + (data.error || 'Sesión expirada'), 'error');
+            novaToast(t('msg_loading_err') + ': ' + (data.error || 'Sesión expirada'), 'error');
             if (response.status === 401) cerrarSesion();
         }
     }
 
     async function saveData() {
         const { response, data } = await fetchJSON({ action: "guardar_json", content: JSON.stringify(catalogo) }, true);
-        if (response.ok && data.success) { novaToast('Datos guardados correctamente', 'success'); }
-        else { novaToast('Error al guardar: ' + (data.error || 'Desconocido'), 'error'); }
+        if (response.ok && data.success) { novaToast(t('msg_save_ok'), 'success'); }
+        else { novaToast(t('msg_save_err') + ': ' + (data.error || 'Desconocido'), 'error'); }
+    }
+
+    function downloadBackup() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(catalogo, null, 4));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "novaplay_backup_" + new Date().toISOString().slice(0, 10) + ".json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     }
 
     // --- Events Editor Logic ---
@@ -566,12 +749,11 @@
         if (response.ok && data.success) {
             eventosData = data.eventos || {};
             renderEventsEditor();
-        } else { novaToast('Error al cargar eventos', 'error'); }
+        } else { novaToast(t('msg_loading_err'), 'error'); }
     }
 
     function renderEventsEditor() {
         if (!eventosData) return;
-        // Mapeo corregido a las claves reales del JSON
         document.getElementById('event-marquee').value = eventosData.texto || '';
         document.getElementById('event-active').value = String(eventosData.activo) || 'false';
         document.getElementById('event-version').value = eventosData.eventoVersion || '0';
@@ -589,62 +771,26 @@
 
     async function saveEventos() {
         if (!eventosData) return;
-
         const texto = document.getElementById('event-marquee').value.trim();
         const activo = document.getElementById('event-active').value === 'true';
         const fecha = document.getElementById('event-date').value;
         const fecha_hasta = document.getElementById('event-date-until').value;
         const desde = document.getElementById('event-start-time').value;
         const hasta = document.getElementById('event-end-time').value;
-
         const titulo = document.getElementById('popup-title').value.trim();
         const activado = document.getElementById('popup-active').value === 'true';
         const parrafos = document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '');
-
-        // Detectar cambios en sección Notificación
-        const marqueeChanged = texto !== (eventosData.texto || '') ||
-                               activo !== (eventosData.activo || false) ||
-                               fecha !== (eventosData.fecha || '') ||
-                               fecha_hasta !== (eventosData['fecha-hasta'] || '') ||
-                               desde !== (eventosData.desde || '') ||
-                               hasta !== (eventosData.hasta || '');
-
-        // Detectar cambios en sección Pop-up
+        const marqueeChanged = texto !== (eventosData.texto || '') || activo !== (eventosData.activo || false) || fecha !== (eventosData.fecha || '') || fecha_hasta !== (eventosData['fecha-hasta'] || '') || desde !== (eventosData.desde || '') || hasta !== (eventosData.hasta || '');
         const v2 = eventosData.v2 || {};
-        const popupChanged = titulo !== (v2.titulo || '') ||
-                             activado !== (v2.activado || false) ||
-                             JSON.stringify(parrafos) !== JSON.stringify(v2.parrafos || []);
-
-        if (!marqueeChanged && !popupChanged) {
-            return novaToast('No se detectaron cambios', 'info');
-        }
-
+        const popupChanged = titulo !== (v2.titulo || '') || activado !== (v2.activado || false) || JSON.stringify(parrafos) !== JSON.stringify(v2.parrafos || []);
+        if (!marqueeChanged && !popupChanged) { return novaToast(t('msg_no_changes'), 'info'); }
         const newEventos = {
-            ...eventosData,
-            texto,
-            activo,
-            eventoVersion: marqueeChanged ? (parseInt(eventosData.eventoVersion) || 0) + 1 : (parseInt(eventosData.eventoVersion) || 0),
-            fecha,
-            "fecha-hasta": fecha_hasta,
-            desde,
-            hasta,
-            v2: {
-                ...v2,
-                titulo,
-                activado,
-                popupVersion: popupChanged ? (parseInt(v2.popupVersion) || 0) + 1 : (parseInt(v2.popupVersion) || 0),
-                parrafos
-            }
+            ...eventosData, texto, activo, eventoVersion: marqueeChanged ? (parseInt(eventosData.eventoVersion) || 0) + 1 : (parseInt(eventosData.eventoVersion) || 0), fecha, "fecha-hasta": fecha_hasta, desde, hasta,
+            v2: { ...v2, titulo, activado, popupVersion: popupChanged ? (parseInt(v2.popupVersion) || 0) + 1 : (parseInt(v2.popupVersion) || 0), parrafos }
         };
-
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
-        if (response.ok && data.success) {
-            novaToast('Notificaciones actualizadas con éxito', 'success');
-            eventosData = newEventos;
-            renderEventsEditor();
-        } else {
-            novaToast('Error al guardar notificaciones', 'error');
-        }
+        if (response.ok && data.success) { novaToast(t('msg_events_ok'), 'success'); eventosData = newEventos; renderEventsEditor(); }
+        else { novaToast(t('msg_events_err'), 'error'); }
     }
 
     function updateStats() {
@@ -657,13 +803,11 @@
     function renderCategories() {
         const list = document.getElementById('category-list');
         list.innerHTML = '';
-
         const items = [
-            { id: -1, title: 'Todos', icon: 'fa-layer-group', special: false },
-            { id: -2, title: 'Inactivos', icon: 'fa-times-circle', special: false },
+            { id: -1, title: currentLang === "ES" ? 'Todos' : 'All', icon: 'fa-layer-group', special: false },
+            { id: -2, title: currentLang === "ES" ? 'Inactivos' : 'Inactive', icon: 'fa-times-circle', special: false },
             { id: -3, title: 'EVENTOS', icon: 'fa-calendar-alt', special: true }
         ];
-
         items.forEach(it => {
             const div = document.createElement('div');
             div.className = `category-item ${currentCategoryIndex === it.id ? 'active' : ''} ${it.special ? 'special' : ''}`;
@@ -671,25 +815,16 @@
             div.onclick = () => selectCategory(it.id);
             list.appendChild(div);
         });
-
         const dragList = document.createElement('div');
         dragList.id = 'draggable-categories';
         list.appendChild(dragList);
-
         catalogo.forEach((cat, index) => {
             const item = document.createElement('div');
             item.className = `category-item ${index === currentCategoryIndex ? 'active' : ''}`;
-            item.innerHTML = `
-                <span><i class="fas fa-folder"></i> ${cat.title}</span>
-                <div class="actions">
-                    <button class="btn-icon" onclick="openCategoryModal(${index})"><i class="fas fa-edit"></i></button>
-                    <button class="btn-icon" onclick="deleteCategory(${index})"><i class="fas fa-trash"></i></button>
-                </div>
-            `;
+            item.innerHTML = `<span><i class="fas fa-folder"></i> ${cat.title}</span><div class="actions"><button class="btn-icon" onclick="openCategoryModal(${index})"><i class="fas fa-edit"></i></button><button class="btn-icon" onclick="deleteCategory(${index})"><i class="fas fa-trash"></i></button></div>`;
             item.onclick = (e) => { if (!e.target.closest('.actions')) selectCategory(index); };
             dragList.appendChild(item);
         });
-
         if (!dragList._sortable) {
             dragList._sortable = new Sortable(dragList, {
                 animation: 150,
@@ -706,6 +841,7 @@
 
     function selectCategory(index) {
         currentCategoryIndex = index;
+        clearSelection();
         if (index === -3) {
             document.getElementById('main-content').classList.add('hidden');
             document.getElementById('events-editor').classList.remove('hidden');
@@ -722,7 +858,6 @@
         const list = document.getElementById('channel-list');
         list.innerHTML = '';
         let channelsToRender = [];
-
         if (currentCategoryIndex === -1) {
             catalogo.forEach((cat, catIdx) => { (cat.items || []).forEach((ch, chIdx) => { channelsToRender.push({ ...ch, catIdx, chIdx, catTitle: cat.title }); }); });
             document.getElementById('new-channel-btn').disabled = true;
@@ -738,12 +873,14 @@
         channelsToRender.forEach((ch) => {
             if (filter && !ch.name.toLowerCase().includes(filter.toLowerCase())) return;
             const card = document.createElement('div');
-            card.className = 'channel-card' + (currentCategoryIndex < 0 ? ' no-drag' : '');
+            const isSelected = selectedChannels.some(s => s.catIdx === ch.catIdx && s.chIdx === ch.chIdx);
+            card.className = 'channel-card' + (currentCategoryIndex < 0 ? ' no-drag' : '') + (isSelected ? ' selected' : '');
             card.innerHTML = `
+                <input type="checkbox" class="channel-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectChannel(event, ${ch.catIdx}, ${ch.chIdx})">
                 <img src="${ch.icono}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=?'">
                 <div class="channel-info">
                     <h3>${ch.name}</h3>
-                    <p>#${ch.canal || '?'} | ${String(ch.status) === 'true' ? 'Activo' : 'Inactivo'}</p>
+                    <p>#${ch.canal || '?'} | ${String(ch.status) === 'true' ? t('opt_active') : t('opt_inactive')}</p>
                 </div>
                 ${currentCategoryIndex < 0 ? `<span class="channel-cat-tag">${ch.catTitle}</span>` : ''}
                 <button class="btn-icon" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.4); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 1; z-index: 10;" onclick="openChannelModal(${ch.chIdx}, ${ch.catIdx})">
@@ -757,6 +894,7 @@
             list._sortable = new Sortable(list, {
                 animation: 150,
                 ghostClass: 'sortable-ghost',
+                filter: '.channel-checkbox',
                 onEnd: (evt) => {
                     if (currentCategoryIndex < 0) return;
                     const chs = catalogo[currentCategoryIndex].items;
@@ -767,6 +905,83 @@
         }
         list._sortable.option("disabled", currentCategoryIndex < 0);
         updateStats();
+    }
+
+    // --- Bulk Action Logic ---
+    function toggleSelectChannel(e, catIdx, chIdx) {
+        if (e.target.checked) { selectedChannels.push({ catIdx, chIdx }); }
+        else { selectedChannels = selectedChannels.filter(s => !(s.catIdx === catIdx && s.chIdx === chIdx)); }
+        updateBulkBar();
+        renderChannels(document.getElementById('channel-search').value);
+    }
+
+    function updateBulkBar() {
+        const bar = document.getElementById('bulk-bar');
+        const count = document.getElementById('bulk-count');
+        if (selectedChannels.length > 0) {
+            bar.classList.add('active');
+            count.textContent = `${selectedChannels.length} ${t('bulk_selected')}`;
+        } else { bar.classList.remove('active'); }
+    }
+
+    function clearSelection() { selectedChannels = []; updateBulkBar(); renderChannels(document.getElementById('channel-search').value); }
+
+    function bulkMoveCategory() {
+        if (selectedChannels.length === 0) return;
+        const catNames = catalogo.map((c, i) => `${i}: ${c.title}`).join('\n');
+        const target = prompt(`Mover a categoría (ID):\n${catNames}`);
+        const targetIdx = parseInt(target);
+        if (isNaN(targetIdx) || !catalogo[targetIdx]) return;
+
+        // Process in reverse to avoid index shifts if multiple from same cat
+        selectedChannels.sort((a, b) => b.chIdx - a.chIdx).forEach(s => {
+            const ch = catalogo[s.catIdx].items.splice(s.chIdx, 1)[0];
+            catalogo[targetIdx].items.push(ch);
+        });
+        clearSelection();
+        renderCategories();
+    }
+
+    function bulkToggleStatus() {
+        if (selectedChannels.length === 0) return;
+        selectedChannels.forEach(s => {
+            const ch = catalogo[s.catIdx].items[s.chIdx];
+            ch.status = String(ch.status) === 'true' ? 'false' : 'true';
+        });
+        clearSelection();
+        renderChannels();
+    }
+
+    function bulkDelete() {
+        if (selectedChannels.length === 0 || !confirm(t('msg_confirm_delete_bulk'))) return;
+        // Group by cat and delete in reverse ch order
+        const grouped = {};
+        selectedChannels.forEach(s => { if (!grouped[s.catIdx]) grouped[s.catIdx] = []; grouped[s.catIdx].push(s.chIdx); });
+        Object.keys(grouped).forEach(catIdx => {
+            grouped[catIdx].sort((a, b) => b - a).forEach(chIdx => { catalogo[catIdx].items.splice(chIdx, 1); });
+        });
+        clearSelection();
+        renderChannels();
+    }
+
+    // --- Icon Browser Logic ---
+    async function openIconBrowser() {
+        document.getElementById('icon-modal').style.display = 'flex';
+        document.getElementById('icon-loader').style.display = 'block';
+        document.getElementById('icon-grid').innerHTML = '';
+        try {
+            const res = await fetch(GITHUB_ICONS_API);
+            const data = await res.json();
+            document.getElementById('icon-loader').style.display = 'none';
+            const grid = document.getElementById('icon-grid');
+            data.filter(item => item.type === 'file' && item.name.match(/\.(png|jpe?g|webp|svg)$/i)).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'icon-item';
+                div.innerHTML = `<img src="${item.download_url}"><span>${item.name}</span>`;
+                div.onclick = () => { document.getElementById('ch-icono').value = item.download_url; closeModal('icon-modal'); };
+                grid.appendChild(div);
+            });
+        } catch (e) { novaToast("Error fetching icons", "error"); document.getElementById('icon-loader').style.display = 'none'; }
     }
 
     function filterChannels() { renderChannels(document.getElementById('channel-search').value); }
@@ -784,11 +999,11 @@
         closeModal('category-modal');
         renderCategories();
     }
-    function deleteCategory(index) { if (confirm('¿Eliminar esta categoría?')) { catalogo.splice(index, 1); currentCategoryIndex = -1; renderCategories(); } }
+    function deleteCategory(index) { if (confirm(t('msg_confirm_delete_cat'))) { catalogo.splice(index, 1); currentCategoryIndex = -1; renderCategories(); } }
 
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
-        if (catalogo.length === 0) return novaToast('Cree una categoría primero', 'info');
-        if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categoría primero', 'info');
+        if (catalogo.length === 0) return novaToast(t('msg_no_cat'), 'info');
+        if (catIndex < 0 && chIndex === -1) return novaToast(t('msg_select_cat'), 'info');
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
         const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
@@ -808,7 +1023,7 @@
         document.getElementById('ch-user').value = ch['User-Agent'] || '';
         document.getElementById('ch-drm1').value = ch.drm_license_uri || '';
         document.getElementById('ch-drm2').value = ch.drm_license_uri2 || '';
-        document.getElementById('modal-title').innerText = chIndex >= 0 ? 'Editar Canal' : 'Nuevo Canal';
+        document.getElementById('modal-title').innerText = chIndex >= 0 ? t('modal_channel_title') : t('btn_new_channel');
         document.getElementById('channel-modal').style.display = 'flex';
     }
 
@@ -831,7 +1046,7 @@
             drm_license_uri: document.getElementById('ch-drm1').value.trim(),
             drm_license_uri2: document.getElementById('ch-drm2').value.trim()
         };
-        if (!ch.name) return novaToast('Nombre obligatorio', 'error');
+        if (!ch.name) return novaToast(t('msg_name_req'), 'error');
         if (chIndex >= 0) { catalogo[catIndex].items[chIndex] = ch; }
         else { catalogo[catIndex].items.push(ch); }
         closeModal('channel-modal');
@@ -841,7 +1056,7 @@
     function deleteChannel() {
         const chIndex = parseInt(document.getElementById('edit-channel-index').value);
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
-        if (chIndex >= 0 && confirm('¿Eliminar canal?')) { catalogo[catIndex].items.splice(chIndex, 1); closeModal('channel-modal'); renderChannels(); }
+        if (chIndex >= 0 && confirm(t('msg_confirm_delete_ch'))) { catalogo[catIndex].items.splice(chIndex, 1); closeModal('channel-modal'); renderChannels(); }
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
