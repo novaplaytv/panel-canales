@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>NovaPlay | Channel Manager</title>
     <link rel="icon" type="image/webp" href="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
@@ -20,33 +20,46 @@
             --border: #293246;
             --success: #10b981;
             --error: #ef4444;
-            --nav-height: 60px;
+            --nav-height: 70px;
             --sidebar-width: 280px;
         }
 
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
         html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* Navegación - Estandarizada */
-        .nova-nav { position: sticky; top: 0; z-index: 9999; background: rgba(8,10,16,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); width: 100%; flex-shrink: 0; }
-        .nav-inner { max-width: 1300px; margin: auto; height: var(--nav-height); padding: 0 15px; display: flex; align-items: center; justify-content: space-between; }
-        .nav-brand { display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-weight: 800; font-size: 16px; letter-spacing: -0.5px; }
-        .nav-brand img { width: 28px; height: 28px; border-radius: 6px; }
-
-        .nav-links { display: flex; gap: 5px; align-items: center; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; transition: 0.2s; }
+        /* Navegación Premium - Estandarizada con novaplaytv.github.io */
+        .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .nav-inner { max-width: 1400px; margin: auto; height: var(--nav-height); padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
+        .nav-brand img { width: 36px; height: 32px; border-radius: 8px; }
+        .nav-links { display: flex; gap: 15px; align-items: center; }
+        .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; padding: 10px 15px; border-radius: 10px; }
         .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.05); }
-        .nav-links a.active { color: #fff; background: var(--primary); }
+        .nav-links a.active { color: var(--primary); }
 
-        .btn-logout { background: var(--error); color: #fff; border: 0; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; display: none; margin-left: 10px; }
-        .btn-login-nav { color: #fff; text-decoration: none; font-weight: 700; font-size: 13px; margin-left: 10px; border: 1px solid var(--primary); padding: 6px 12px; border-radius: 8px; display: none; }
+        .btn-login-nav, .btn-logout {
+            background: var(--primary);
+            color: #fff !important;
+            font-weight: 800 !important;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            display: none;
+            transition: 0.2s;
+        }
+        .btn-login-nav:hover, .btn-logout:hover { transform: scale(1.05); background: var(--primary-hover); }
+        .btn-logout { background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
-        .app-container { display: flex; height: calc(100% - var(--nav-height)); overflow: hidden; }
+        .app-container { display: flex; height: calc(100% - var(--nav-height)); margin-top: var(--nav-height); overflow: hidden; }
 
         /* Sidebar */
         #sidebar { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
         #category-list { flex-grow: 1; overflow-y: auto; padding: 10px; }
-        .category-item { padding: 10px 15px; margin-bottom: 5px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; color: var(--text-muted); font-weight: 600; font-size: 14px; }
+        .category-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s; color: var(--text-muted); font-weight: 600; font-size: 14px; }
         .category-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
         .category-item.active { background: var(--primary); color: #fff; }
         .category-item.special { border-bottom: 1px solid var(--border); margin-bottom: 15px; border-radius: 0; padding-bottom: 15px; }
@@ -59,62 +72,70 @@
         .header-left { display: flex; align-items: center; gap: 20px; }
 
         .search-box { position: relative; width: 300px; }
-        .search-box input { width: 100%; padding: 10px 15px 10px 40px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-size: 14px; }
+        .search-box input { width: 100%; padding: 12px 15px 12px 40px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; }
         .search-box::before { content: "🔍"; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; }
 
         .stats-container { display: flex; gap: 10px; }
-        .stat-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .stat-chip { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
         .stat-chip.success { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
         .stat-chip.inactive { background: rgba(154,163,178,0.1); color: var(--text-muted); border: 1px solid rgba(154,163,178,0.2); }
 
         #channel-list { flex-grow: 1; padding: 25px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; align-content: start; }
 
         /* Channel Card */
-        .channel-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; cursor: move; transition: 0.2s; position: relative; }
-        .channel-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .channel-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 15px; display: flex; align-items: center; gap: 15px; cursor: move; transition: 0.2s; position: relative; }
+        .channel-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .channel-card.no-drag { cursor: default; }
-        .channel-logo { width: 45px; height: 45px; border-radius: 10px; background: #000; object-fit: contain; }
+        .channel-logo { width: 50px; height: 50px; border-radius: 12px; background: #000; object-fit: contain; border: 1px solid var(--border); }
         .channel-info { overflow: hidden; }
-        .channel-info h3 { font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
-        .channel-info p { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-        .channel-cat-tag { position: absolute; top: 10px; right: 10px; font-size: 9px; background: var(--input-bg); padding: 2px 6px; border-radius: 5px; color: var(--primary); font-weight: 800; }
+        .channel-info h3 { font-size: 15px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 700; }
+        .channel-info p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .channel-cat-tag { position: absolute; top: 10px; right: 10px; font-size: 9px; background: var(--input-bg); padding: 3px 8px; border-radius: 6px; color: var(--primary); font-weight: 900; text-transform: uppercase; }
 
         /* Buttons */
-        .btn { padding: 10px 18px; border-radius: 10px; border: 0; cursor: pointer; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn { padding: 12px 20px; border-radius: 12px; border: 0; cursor: pointer; font-weight: 800; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: #fff; }
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .btn-primary:disabled { background: var(--border); cursor: not-allowed; transform: none; }
         .btn-ghost { background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border); }
         .btn-ghost:hover { background: var(--border); color: #fff; }
         .btn-danger { background: var(--error); color: #fff; }
-        .btn-icon { background: none; border: none; color: inherit; cursor: pointer; padding: 4px; border-radius: 4px; font-size: 12px; }
+        .btn-icon { background: none; border: none; color: inherit; cursor: pointer; padding: 6px; border-radius: 6px; font-size: 14px; }
 
         /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px; }
-        .modal { background: var(--card-bg); width: 100%; max-width: 850px; max-height: 90vh; border-radius: 24px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .modal-header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 25px; overflow-y: auto; }
-        .form-section { margin-bottom: 25px; padding: 20px; background: var(--input-bg); border-radius: 15px; border: 1px solid var(--border); }
-        .form-section h4 { color: var(--primary); margin-bottom: 15px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 20000; padding: 20px; }
+        .modal { background: var(--card-bg); width: 100%; max-width: 850px; max-height: 90vh; border-radius: 30px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
+        .modal-header { padding: 25px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 30px; overflow-y: auto; }
+        .form-section { margin-bottom: 25px; padding: 20px; background: var(--input-bg); border-radius: 20px; border: 1px solid var(--border); }
+        .form-section h4 { color: var(--primary); margin-bottom: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        input, select { width: 100%; padding: 12px 15px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-size: 14px; transition: 0.2s; }
+        label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select { width: 100%; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; transition: 0.2s; }
         input:focus { border-color: var(--primary); }
 
         /* Auth View */
         #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
-        .auth-card { width: 380px; padding: 40px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .status { margin-top: 15px; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; display: none; text-align: center; }
+        .auth-card { width: 400px; padding: 50px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); text-align: center; }
+        .status { margin-top: 15px; padding: 14px; border-radius: 12px; font-size: 13px; font-weight: 800; display: none; text-align: center; }
         .status.success { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
         .status.error { background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid var(--error); }
 
         .hidden { display: none !important; }
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         .sortable-ghost { opacity: 0.3; border: 2px dashed var(--primary); }
+
+        @media (max-width: 768px) {
+            .nav-inner { padding: 0 15px; }
+            .nav-links a:not(.btn-login-nav):not(.btn-logout) { display: none; }
+            .sidebar-width { width: 80px; }
+            #sidebar span { display: none; }
+            #sidebar .category-item { justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -122,40 +143,48 @@
 <nav class="nova-nav">
     <div class="nav-inner">
         <a class="nav-brand" href="https://novaplaytv.github.io/">
-            <img src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp" alt="NovaPlay">
+            <img src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp" alt="Logo">
             NOVAPLAY
         </a>
         <div class="nav-links">
             <a href="https://novaplaytv.github.io/">INICIO</a>
-            <a href="https://novaplaytv.github.io/DEMO-NOVAPLAY/">DEMO</a>
-            <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/" id="navPanelIconos" style="display:none;">ICONOS</a>
+            <a href="https://novaplaytv.github.io/DEMO-NOVAPLAY/">WEB DEMO</a>
+            <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/" id="navPanelImg" style="display:none;">PANEL IMG</a>
             <a href="#" class="btn-login-nav" id="navLogin" onclick="location.reload()">INGRESAR</a>
             <button class="btn-logout" id="navLogout" onclick="cerrarSesion()">SALIR</button>
         </div>
     </div>
 </nav>
 
-<div class="app-container">
-    <div id="auth-view">
-        <div class="auth-card">
-            <h2 style="text-align:center; margin-bottom:30px; font-weight:800;">Acceso al Panel</h2>
-            <div class="form-group">
-                <label>Usuario</label>
-                <input type="text" id="username" placeholder="Usuario" autocomplete="username">
-            </div>
-            <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-            </div>
-            <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; margin-top:10px;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
-            <div id="loginStatus" class="status"></div>
+<div id="auth-view">
+    <div class="auth-card">
+        <h2 style="margin-bottom:30px; font-weight:900; font-size: 28px;">Acceso al Panel</h2>
+        <div class="form-group" style="text-align: left;">
+            <label>Usuario</label>
+            <input type="text" id="username" placeholder="Usuario" autocomplete="username">
         </div>
+        <div class="form-group" style="text-align: left;">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; margin-top:10px; padding: 18px;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
+        <div id="loginStatus" class="status"></div>
     </div>
+</div>
 
+<script>
+    // Session Persistence: Immediate Hide
+    if (localStorage.getItem("novaplay_session_token")) {
+        document.getElementById("auth-view").classList.add("hidden");
+    }
+</script>
+
+<div class="app-container">
     <aside id="sidebar">
+        <!-- Sidebar only has category list and new category button per requirements -->
         <div id="category-list"></div>
-        <div style="padding: 10px; border-top: 1px solid var(--border);">
-            <button class="btn btn-ghost" style="width:100%;" onclick="openCategoryModal()">
+        <div style="padding: 20px; border-top: 1px solid var(--border);">
+            <button class="btn btn-ghost" style="width:100%; justify-content: center;" onclick="openCategoryModal()">
                 <i class="fas fa-plus-circle"></i> Nueva Categoría
             </button>
         </div>
@@ -176,7 +205,7 @@
                     </div>
                 </div>
             </div>
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:12px;">
                 <button class="btn btn-primary" id="new-channel-btn" onclick="openChannelModal()">
                     <i class="fas fa-plus"></i> Nuevo Canal
                 </button>
@@ -194,7 +223,7 @@
 <div id="channel-modal" class="modal-overlay">
     <div class="modal">
         <div class="modal-header">
-            <h2 id="modal-title" style="font-weight:800;">Editar Canal</h2>
+            <h2 id="modal-title" style="font-weight:900;">Editar Canal</h2>
             <button class="btn-icon" onclick="closeModal('channel-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -315,9 +344,9 @@
 
 <!-- Category Modal -->
 <div id="category-modal" class="modal-overlay">
-    <div class="modal" style="max-width: 400px;">
+    <div class="modal" style="max-width: 450px;">
         <div class="modal-header">
-            <h2 style="font-weight:800;">Categoría</h2>
+            <h2 style="font-weight:900;">Categoría</h2>
             <button class="btn-icon" onclick="closeModal('category-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -326,7 +355,7 @@
                 <label>Nombre de la Categoría (title)</label>
                 <input type="text" id="cat-title" placeholder="Ej: Deportes">
             </div>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveCategory()">Guardar</button>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px;" onclick="saveCategory()">Guardar</button>
         </div>
     </div>
 </div>
@@ -378,14 +407,14 @@
         document.getElementById("auth-view").classList.add("hidden");
         document.getElementById("navLogin").style.display = 'none';
         document.getElementById("navLogout").style.display = 'block';
-        document.getElementById("navPanelIconos").style.display = 'block';
+        document.getElementById("navPanelImg").style.display = 'block';
     }
 
     function UI_MostrarLogin() {
         document.getElementById("auth-view").classList.remove("hidden");
         document.getElementById("navLogin").style.display = 'block';
         document.getElementById("navLogout").style.display = 'none';
-        document.getElementById("navPanelIconos").style.display = 'none';
+        document.getElementById("navPanelImg").style.display = 'none';
     }
 
     async function iniciarSesion() {
@@ -459,6 +488,7 @@
         if (response.ok && data.success) {
             catalogo = data.json || [];
 
+            // Mapping legacy 'user' to 'User-Agent'
             catalogo.forEach(cat => {
                 (cat.items || []).forEach(ch => {
                     if (ch.user && !ch['User-Agent']) {
