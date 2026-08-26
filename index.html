@@ -571,62 +571,70 @@
 
     function renderEventsEditor() {
         if (!eventosData) return;
-        document.getElementById('event-marquee').value = eventosData.marquee || '';
-        document.getElementById('event-active').value = String(eventosData.active) || 'false';
-        document.getElementById('event-version').value = eventosData.version || '0';
-        document.getElementById('event-date').value = eventosData.date || '';
-        document.getElementById('event-date-until').value = eventosData.date_until || '';
-        document.getElementById('event-start-time').value = eventosData.start_time || '';
-        document.getElementById('event-end-time').value = eventosData.end_time || '';
-        document.getElementById('popup-title').value = eventosData.popup_title || '';
-        document.getElementById('popup-version').value = eventosData.popup_version || '0';
-        document.getElementById('popup-active').value = String(eventosData.popup_active) || 'false';
-        document.getElementById('popup-paragraphs').value = (eventosData.popup_paragraphs || []).join('\n') || '';
+        // Mapeo corregido a las claves reales del JSON
+        document.getElementById('event-marquee').value = eventosData.texto || '';
+        document.getElementById('event-active').value = String(eventosData.activo) || 'false';
+        document.getElementById('event-version').value = eventosData.eventoVersion || '0';
+        document.getElementById('event-date').value = eventosData.fecha || '';
+        document.getElementById('event-date-until').value = eventosData['fecha-hasta'] || '';
+        document.getElementById('event-start-time').value = eventosData.desde || '';
+        document.getElementById('event-end-time').value = eventosData.hasta || '';
+
+        const v2 = eventosData.v2 || {};
+        document.getElementById('popup-title').value = v2.titulo || '';
+        document.getElementById('popup-version').value = v2.popupVersion || '0';
+        document.getElementById('popup-active').value = String(v2.activado) || 'false';
+        document.getElementById('popup-paragraphs').value = (v2.parrafos || []).join('\n') || '';
     }
 
     async function saveEventos() {
         if (!eventosData) return;
 
-        const marquee = document.getElementById('event-marquee').value.trim();
-        const active = document.getElementById('event-active').value === 'true';
-        const date = document.getElementById('event-date').value;
-        const date_until = document.getElementById('event-date-until').value;
-        const start_time = document.getElementById('event-start-time').value;
-        const end_time = document.getElementById('event-end-time').value;
+        const texto = document.getElementById('event-marquee').value.trim();
+        const activo = document.getElementById('event-active').value === 'true';
+        const fecha = document.getElementById('event-date').value;
+        const fecha_hasta = document.getElementById('event-date-until').value;
+        const desde = document.getElementById('event-start-time').value;
+        const hasta = document.getElementById('event-end-time').value;
 
-        const popup_title = document.getElementById('popup-title').value.trim();
-        const popup_active = document.getElementById('popup-active').value === 'true';
-        const popup_paragraphs = document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '');
+        const titulo = document.getElementById('popup-title').value.trim();
+        const activado = document.getElementById('popup-active').value === 'true';
+        const parrafos = document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '');
 
-        // Detectar cambios en sección Notificación (Marquee)
-        const marqueeChanged = marquee !== (eventosData.marquee || '') ||
-                               active !== (eventosData.active || false) ||
-                               date !== (eventosData.date || '') ||
-                               date_until !== (eventosData.date_until || '') ||
-                               start_time !== (eventosData.start_time || '') ||
-                               end_time !== (eventosData.end_time || '');
+        // Detectar cambios en sección Notificación
+        const marqueeChanged = texto !== (eventosData.texto || '') ||
+                               activo !== (eventosData.activo || false) ||
+                               fecha !== (eventosData.fecha || '') ||
+                               fecha_hasta !== (eventosData['fecha-hasta'] || '') ||
+                               desde !== (eventosData.desde || '') ||
+                               hasta !== (eventosData.hasta || '');
 
         // Detectar cambios en sección Pop-up
-        const popupChanged = popup_title !== (eventosData.popup_title || '') ||
-                             popup_active !== (eventosData.popup_active || false) ||
-                             JSON.stringify(popup_paragraphs) !== JSON.stringify(eventosData.popup_paragraphs || []);
+        const v2 = eventosData.v2 || {};
+        const popupChanged = titulo !== (v2.titulo || '') ||
+                             activado !== (v2.activado || false) ||
+                             JSON.stringify(parrafos) !== JSON.stringify(v2.parrafos || []);
 
         if (!marqueeChanged && !popupChanged) {
             return novaToast('No se detectaron cambios', 'info');
         }
 
         const newEventos = {
-            marquee,
-            active,
-            version: marqueeChanged ? (parseInt(eventosData.version) || 0) + 1 : (parseInt(eventosData.version) || 0),
-            date,
-            date_until,
-            start_time,
-            end_time,
-            popup_title,
-            popup_version: popupChanged ? (parseInt(eventosData.popup_version) || 0) + 1 : (parseInt(eventosData.popup_version) || 0),
-            popup_active,
-            popup_paragraphs
+            ...eventosData,
+            texto,
+            activo,
+            eventoVersion: marqueeChanged ? (parseInt(eventosData.eventoVersion) || 0) + 1 : (parseInt(eventosData.eventoVersion) || 0),
+            fecha,
+            "fecha-hasta": fecha_hasta,
+            desde,
+            hasta,
+            v2: {
+                ...v2,
+                titulo,
+                activado,
+                popupVersion: popupChanged ? (parseInt(v2.popupVersion) || 0) + 1 : (parseInt(v2.popupVersion) || 0),
+                parrafos
+            }
         };
 
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
