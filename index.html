@@ -236,9 +236,9 @@
             <h2 style="margin-bottom: 20px; font-weight: 900;">Editor de Eventos y Avisos</h2>
 
             <div class="form-section">
-                <h4>Configuración de Eventos (Marquee)</h4>
+                <h4>Configuración de Notificaciones</h4>
                 <div class="form-group">
-                    <label>Texto del Marquee (Aviso Deslizante)</label>
+                    <label>Texto de la Notificación</label>
                     <textarea id="event-marquee" placeholder="Escriba el mensaje aquí..."></textarea>
                 </div>
                 <div class="grid-3">
@@ -597,10 +597,10 @@
         };
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
         if (response.ok && data.success) {
-            novaToast('Eventos guardados y versiones incrementadas', 'success');
+            novaToast('Notificaciones guardadas y versiones incrementadas', 'success');
             eventosData = newEventos;
             renderEventsEditor();
-        } else { novaToast('Error al guardar eventos', 'error'); }
+        } else { novaToast('Error al guardar notificaciones', 'error'); }
     }
 
     function updateStats() {
