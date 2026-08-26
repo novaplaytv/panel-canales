@@ -90,6 +90,13 @@
             color: var(--text-bright);
         }
 
+        .category-item.special {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-radius: 0;
+        }
+
         .category-item .actions {
             opacity: 0;
             transition: opacity 0.2s;
@@ -127,9 +134,43 @@
             align-items: center;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+        }
+
+        .stat-chip.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border-color: rgba(34, 197, 94, 0.2);
+        }
+
+        .stat-chip.gray {
+            background: rgba(180, 180, 192, 0.1);
+            color: var(--text-main);
+            border-color: rgba(180, 180, 192, 0.2);
+        }
+
         .search-container {
             position: relative;
-            width: 300px;
+            width: 250px;
         }
 
         .search-container i {
@@ -171,11 +212,16 @@
             gap: 16px;
             cursor: move;
             transition: transform 0.2s, border-color 0.2s;
+            position: relative;
         }
 
         .channel-card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
+        }
+
+        .channel-card.no-drag {
+            cursor: default;
         }
 
         .channel-logo {
@@ -203,6 +249,18 @@
         .channel-info p {
             font-size: 0.8rem;
             color: var(--text-main);
+        }
+
+        .channel-category-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.65rem;
+            background: var(--input-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-weight: 600;
         }
 
         /* --- Forms & Modals --- */
@@ -399,12 +457,22 @@
     <!-- Main Content Area -->
     <main id="main-content">
         <header>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" id="channel-search" placeholder="Buscar canal..." oninput="filterChannels()">
+            <div class="header-left">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="channel-search" placeholder="Buscar canal..." oninput="filterChannels()">
+                </div>
+                <div class="stats-container">
+                    <div class="stat-chip success">
+                        <i class="fas fa-check-circle"></i> <span id="active-count">0</span> Activos
+                    </div>
+                    <div class="stat-chip gray">
+                        <i class="fas fa-times-circle"></i> <span id="inactive-count">0</span> Inactivos
+                    </div>
+                </div>
             </div>
             <div class="header-actions" style="display: flex; gap: 8px;">
-                <button class="btn btn-primary" onclick="openChannelModal()">
+                <button class="btn btn-primary" id="new-channel-btn" onclick="openChannelModal()">
                     <i class="fas fa-plus"></i> Nuevo Canal
                 </button>
                 <button class="btn btn-ghost" onclick="saveData()">
@@ -430,6 +498,7 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="edit-channel-index">
+                <input type="hidden" id="edit-channel-cat-index">
 
                 <!-- Section: General -->
                 <div class="form-section">
@@ -562,7 +631,7 @@
     <script>
         const API_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales';
         let catalogo = [];
-        let currentCategoryIndex = 0;
+        let currentCategoryIndex = -1; // -1 represents "Todos"
         let sessionToken = localStorage.getItem("novaplay_session_token") || "";
 
         // --- Auth & API ---
@@ -660,10 +729,37 @@
             }
         }
 
+        // --- Stats ---
+        function updateStats() {
+            let active = 0;
+            let inactive = 0;
+            catalogo.forEach(cat => {
+                (cat.items || []).forEach(ch => {
+                    if (ch.status === 'true') active++;
+                    else inactive++;
+                });
+            });
+            document.getElementById('active-count').textContent = active;
+            document.getElementById('inactive-count').textContent = inactive;
+        }
+
         // --- Renderers ---
         function renderCategories() {
             const list = document.getElementById('category-list');
             list.innerHTML = '';
+
+            // Fixed "Todos" Item
+            const todosItem = document.createElement('div');
+            todosItem.className = `category-item special ${currentCategoryIndex === -1 ? 'active' : ''}`;
+            todosItem.innerHTML = `<span><i class="fas fa-layer-group"></i> Todos</span>`;
+            todosItem.onclick = () => selectCategory(-1);
+            list.appendChild(todosItem);
+
+            // Container for draggable categories
+            const dragList = document.createElement('div');
+            dragList.id = 'draggable-categories';
+            list.appendChild(dragList);
+
             catalogo.forEach((cat, index) => {
                 const item = document.createElement('div');
                 item.className = `category-item ${index === currentCategoryIndex ? 'active' : ''}`;
@@ -678,22 +774,25 @@
                     if (e.target.closest('.actions')) return;
                     selectCategory(index);
                 };
-                list.appendChild(item);
+                dragList.appendChild(item);
             });
 
             // Reorder categories
-            if (!list._sortable) {
-                list._sortable = new Sortable(list, {
+            if (!dragList._sortable) {
+                dragList._sortable = new Sortable(dragList, {
                     animation: 150,
                     onEnd: (evt) => {
                         const movedItem = catalogo.splice(evt.oldIndex, 1)[0];
                         catalogo.splice(evt.newIndex, 0, movedItem);
-                        currentCategoryIndex = evt.newIndex;
+                        if (currentCategoryIndex !== -1) {
+                            currentCategoryIndex = evt.newIndex;
+                        }
                         renderCategories();
                     }
                 });
             }
             renderChannels();
+            updateStats();
         }
 
         function selectCategory(index) {
@@ -705,22 +804,41 @@
             const list = document.getElementById('channel-list');
             list.innerHTML = '';
 
-            if (!catalogo[currentCategoryIndex]) return;
+            let channelsToRender = [];
 
-            const channels = catalogo[currentCategoryIndex].items || [];
+            if (currentCategoryIndex === -1) {
+                // Show ALL channels
+                catalogo.forEach((cat, catIdx) => {
+                    (cat.items || []).forEach((ch, chIdx) => {
+                        channelsToRender.push({ ...ch, catIdx, chIdx, catTitle: cat.title });
+                    });
+                });
+                document.getElementById('new-channel-btn').disabled = true;
+                document.getElementById('new-channel-btn').title = "Seleccione una categoría para agregar canales";
+            } else {
+                const cat = catalogo[currentCategoryIndex];
+                if (cat) {
+                    (cat.items || []).forEach((ch, chIdx) => {
+                        channelsToRender.push({ ...ch, catIdx: currentCategoryIndex, chIdx });
+                    });
+                }
+                document.getElementById('new-channel-btn').disabled = false;
+                document.getElementById('new-channel-btn').title = "";
+            }
 
-            channels.forEach((ch, index) => {
+            channelsToRender.forEach((ch) => {
                 if (filter && !ch.name.toLowerCase().includes(filter.toLowerCase())) return;
 
                 const card = document.createElement('div');
-                card.className = 'channel-card';
+                card.className = 'channel-card' + (currentCategoryIndex === -1 ? ' no-drag' : '');
                 card.innerHTML = `
                     <img src="${ch.icono}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=?'">
                     <div class="channel-info">
                         <h3>${ch.name}</h3>
                         <p>#${ch.canal || '?'} | ${ch.status === 'true' ? 'Activo' : 'Inactivo'}</p>
                     </div>
-                    <button class="btn-icon" onclick="openChannelModal(${index})"><i class="fas fa-edit"></i></button>
+                    ${currentCategoryIndex === -1 ? `<span class="channel-category-tag">${ch.catTitle}</span>` : ''}
+                    <button class="btn-icon" onclick="openChannelModal(${ch.chIdx}, ${ch.catIdx})"><i class="fas fa-edit"></i></button>
                 `;
                 list.appendChild(card);
             });
@@ -731,12 +849,18 @@
                     animation: 150,
                     ghostClass: 'sortable-ghost',
                     onEnd: (evt) => {
+                        if (currentCategoryIndex === -1) return;
                         const chs = catalogo[currentCategoryIndex].items;
                         const movedItem = chs.splice(evt.oldIndex, 1)[0];
                         chs.splice(evt.newIndex, 0, movedItem);
                     }
                 });
             }
+
+            // Disable reordering if "Todos" is selected
+            list._sortable.option("disabled", currentCategoryIndex === -1);
+
+            updateStats();
         }
 
         function filterChannels() {
@@ -769,17 +893,20 @@
         function deleteCategory(index) {
             if (confirm('¿Eliminar esta categoría y todos sus canales?')) {
                 catalogo.splice(index, 1);
-                currentCategoryIndex = 0;
+                currentCategoryIndex = -1;
                 renderCategories();
             }
         }
 
         // --- CRUD Channels ---
-        function openChannelModal(index = -1) {
+        function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
             if (catalogo.length === 0) return alert('Cree una categoría primero');
+            if (catIndex === -1 && chIndex === -1) return alert('Seleccione una categoría primero');
 
-            document.getElementById('edit-channel-index').value = index;
-            const ch = index >= 0 ? catalogo[currentCategoryIndex].items[index] : {
+            document.getElementById('edit-channel-index').value = chIndex;
+            document.getElementById('edit-channel-cat-index').value = catIndex;
+
+            const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
                 name: '', icono: '', canal: '', status: 'true', NSFW: 'NO',
                 url: '', url2: '', referer: '', origin: '', user: '',
                 drm_license_uri: '', drm_license_uri2: '',
@@ -803,12 +930,14 @@
             document.getElementById('ch-mode-watchdog').value = ch.watchdog || '';
             document.getElementById('ch-mode-youtube').value = ch.youtube || '';
 
-            document.getElementById('modal-title').innerText = index >= 0 ? 'Editar Canal' : 'Nuevo Canal';
+            document.getElementById('modal-title').innerText = chIndex >= 0 ? 'Editar Canal' : 'Nuevo Canal';
             document.getElementById('channel-modal').style.display = 'flex';
         }
 
         function saveChannel() {
-            const index = parseInt(document.getElementById('edit-channel-index').value);
+            const chIndex = parseInt(document.getElementById('edit-channel-index').value);
+            const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
+
             const ch = {
                 name: document.getElementById('ch-name').value.trim(),
                 icono: document.getElementById('ch-icono').value.trim(),
@@ -830,19 +959,21 @@
 
             if (!ch.name) return alert('El nombre es obligatorio');
 
-            if (index >= 0) {
-                catalogo[currentCategoryIndex].items[index] = ch;
+            if (chIndex >= 0) {
+                catalogo[catIndex].items[chIndex] = ch;
             } else {
-                catalogo[currentCategoryIndex].items.push(ch);
+                catalogo[catIndex].items.push(ch);
             }
             closeModal('channel-modal');
             renderChannels();
         }
 
         function deleteChannel() {
-            const index = parseInt(document.getElementById('edit-channel-index').value);
-            if (index >= 0 && confirm('¿Eliminar este canal?')) {
-                catalogo[currentCategoryIndex].items.splice(index, 1);
+            const chIndex = parseInt(document.getElementById('edit-channel-index').value);
+            const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
+
+            if (chIndex >= 0 && confirm('¿Eliminar este canal?')) {
+                catalogo[catIndex].items.splice(chIndex, 1);
                 closeModal('channel-modal');
                 renderChannels();
             }
