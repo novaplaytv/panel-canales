@@ -123,6 +123,84 @@
         .status.success { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
         .status.error { background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid var(--error); }
 
+        /* Toast Notification System */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 30000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast-msg {
+            pointer-events: auto;
+            min-width: 300px;
+            max-width: 450px;
+            background: rgba(17, 21, 31, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast-msg::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .toast-msg.success::before { background: var(--success); }
+        .toast-msg.error::before { background: var(--error); }
+        .toast-msg.info::before { background: var(--primary); }
+
+        .toast-content {
+            flex-grow: 1;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-close:hover { color: #fff; }
+
+        @keyframes toast-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-out {
+            transform: translateX(120%);
+            opacity: 0;
+        }
+
         .hidden { display: none !important; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -337,12 +415,41 @@
     </div>
 </div>
 
+<div id="toast-container"></div>
+
 <script>
     const API_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales';
     const API_ICON_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-icono';
     let catalogo = [];
     let currentCategoryIndex = -1; // -1: Todos, -2: Inactivos
     let sessionToken = localStorage.getItem("novaplay_session_token") || "";
+
+    function novaToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast-msg ${type}`;
+
+        let icon = 'fa-check-circle';
+        if (type === 'error') icon = 'fa-exclamation-circle';
+        if (type === 'info') icon = 'fa-info-circle';
+
+        toast.innerHTML = `
+            <i class="fas ${icon}" style="color: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--primary)'}"></i>
+            <div class="toast-content">${message}</div>
+            <button class="toast-close" onclick="this.parentElement.classList.add('toast-out'); setTimeout(() => this.parentElement.remove(), 300)">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.classList.add('toast-out');
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 5000);
+    }
 
     // --- Auth & API ---
     function mostrarEstado(id, tipo, mensaje) {
@@ -450,10 +557,10 @@
             if (res.ok && data.url) {
                 iconInput.value = data.url;
             } else {
-                alert("Error al subir imagen: " + (data.error || "Desconocido"));
+                novaToast("Error al subir imagen: " + (data.error || "Desconocido"), "error");
             }
         } catch (e) {
-            alert("Error de red al subir imagen.");
+            novaToast("Error de red al subir imagen.", "error");
         } finally {
             iconInput.placeholder = originalPlaceholder;
             fileInput.value = "";
@@ -486,7 +593,7 @@
 
             renderCategories();
         } else {
-            alert('Error al cargar datos: ' + (data.error || 'Sesión expirada'));
+            novaToast('Error al cargar datos: ' + (data.error || 'Sesión expirada'), 'error');
             if (response.status === 401) cerrarSesion();
         }
     }
@@ -527,9 +634,9 @@
         }, true);
 
         if (response.ok && data.success) {
-            alert('Datos guardados correctamente en Supabase');
+            novaToast('Datos guardados correctamente en Supabase', 'success');
         } else {
-            alert('Error al guardar: ' + (data.error || 'Desconocido'));
+            novaToast('Error al guardar: ' + (data.error || 'Desconocido'), 'error');
         }
     }
 
@@ -716,8 +823,8 @@
 
     // --- CRUD Channels ---
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
-        if (catalogo.length === 0) return alert('Cree una categoría primero');
-        if (catIndex < 0 && chIndex === -1) return alert('Seleccione una categoría primero');
+        if (catalogo.length === 0) return novaToast('Cree una categoría primero', 'info');
+        if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categoría primero', 'info');
 
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
@@ -767,7 +874,7 @@
             drm_license_uri2: document.getElementById('ch-drm2').value.trim()
         };
 
-        if (!ch.name) return alert('El nombre es obligatorio');
+        if (!ch.name) return novaToast('El nombre es obligatorio', 'error');
 
         if (chIndex >= 0) {
             catalogo[catIndex].items[chIndex] = ch;
