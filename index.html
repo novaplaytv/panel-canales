@@ -77,6 +77,8 @@
             justify-content: space-between;
             transition: all 0.2s;
             user-select: none;
+            background: transparent;
+            color: var(--text-main);
         }
 
         .category-item:hover {
@@ -91,6 +93,8 @@
         .category-item .actions {
             opacity: 0;
             transition: opacity 0.2s;
+            display: flex;
+            gap: 4px;
         }
 
         .category-item:hover .actions {
@@ -219,7 +223,7 @@
         .modal {
             background: var(--sidebar-bg);
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             max-height: 90vh;
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -263,6 +267,12 @@
             gap: 16px;
         }
 
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -284,6 +294,10 @@
             outline: none;
         }
 
+        input:focus, select:focus {
+            border-color: var(--accent);
+        }
+
         .btn {
             padding: 10px 20px;
             border-radius: 8px;
@@ -291,6 +305,9 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-primary { background: var(--accent); color: white; }
@@ -361,7 +378,7 @@
                 <label>Contraseña</label>
                 <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
             </div>
-            <button class="btn btn-primary" id="loginButton" style="width: 100%;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
+            <button class="btn btn-primary" id="loginButton" style="width: 100%; justify-content: center;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
             <div id="loginStatus" class="status"></div>
         </div>
     </div>
@@ -375,7 +392,7 @@
             </button>
         </div>
         <div id="category-list">
-            <!-- Categories will be rendered here -->
+            <!-- Categories rendered here -->
         </div>
     </aside>
 
@@ -400,7 +417,7 @@
         </header>
 
         <div id="channel-list">
-            <!-- Channels will be rendered here -->
+            <!-- Channels rendered here -->
         </div>
     </main>
 
@@ -423,73 +440,101 @@
                             <input type="text" id="ch-name" placeholder="Ej: HBO HD">
                         </div>
                         <div class="form-group">
-                            <label>Logo URL</label>
-                            <input type="text" id="ch-logo" placeholder="https://...">
+                            <label>Logo URL (icono)</label>
+                            <input type="text" id="ch-icono" placeholder="https://...">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Epg ID</label>
-                        <input type="text" id="ch-epg" placeholder="HBO.us">
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Número de Canal (canal)</label>
+                            <input type="text" id="ch-canal" placeholder="Ej: 101">
+                        </div>
+                        <div class="form-group">
+                            <label>Estado (status)</label>
+                            <select id="ch-status">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>NSFW</label>
+                            <select id="ch-nsfw">
+                                <option value="NO">NO</option>
+                                <option value="YES">YES</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Section: URLs -->
+                <!-- Section: Streams -->
                 <div class="form-section">
                     <h4>Fuentes de Stream</h4>
-                    <div class="form-group">
-                        <label>URL Principal</label>
-                        <input type="text" id="ch-url" placeholder="http://...">
-                    </div>
-                    <div class="form-group">
-                        <label>URL Alternativa</label>
-                        <input type="text" id="ch-url2" placeholder="http://...">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>URL Principal</label>
+                            <input type="text" id="ch-url" placeholder="http://...">
+                        </div>
+                        <div class="form-group">
+                            <label>URL 2</label>
+                            <input type="text" id="ch-url2" placeholder="http://...">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Section: Headers -->
+                <!-- Section: Advanced -->
                 <div class="form-section">
-                    <h4>Headers & Seguridad</h4>
-                    <div class="grid-2">
+                    <h4>Configuración Avanzada</h4>
+                    <div class="grid-3">
                         <div class="form-group">
                             <label>Referer</label>
                             <input type="text" id="ch-referer" placeholder="https://...">
                         </div>
                         <div class="form-group">
-                            <label>User Agent</label>
-                            <input type="text" id="ch-ua" placeholder="Mozilla/5.0...">
+                            <label>Origin</label>
+                            <input type="text" id="ch-origin" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>User Agent (user)</label>
+                            <input type="text" id="ch-user" placeholder="Mozilla/5.0...">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Key ID : Key (DRM)</label>
-                        <input type="text" id="ch-key" placeholder="kid:key">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>DRM License URI</label>
+                            <input type="text" id="ch-drm1" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>DRM License URI 2</label>
+                            <input type="text" id="ch-drm2" placeholder="https://...">
+                        </div>
                     </div>
                 </div>
 
                 <!-- Section: Modes -->
                 <div class="form-section">
-                    <h4>Configuración de Reproducción</h4>
+                    <h4>Modos (web, VLC, watchdog, youtube)</h4>
                     <div class="grid-2">
                         <div class="form-group">
-                            <label>Modo de Reproducción</label>
-                            <select id="ch-mode">
-                                <option value="direct">Directo</option>
-                                <option value="webview">WebView</option>
-                                <option value="mpd">MPEG-DASH</option>
-                                <option value="hls">HLS (m3u8)</option>
-                            </select>
+                            <label>Web</label>
+                            <input type="text" id="ch-mode-web" placeholder="Valor web">
                         </div>
                         <div class="form-group">
-                            <label>Visibilidad</label>
-                            <select id="ch-visible">
-                                <option value="true">Activo</option>
-                                <option value="false">Oculto</option>
-                            </select>
+                            <label>VLC</label>
+                            <input type="text" id="ch-mode-vlc" placeholder="Valor VLC">
+                        </div>
+                        <div class="form-group">
+                            <label>Watchdog</label>
+                            <input type="text" id="ch-mode-watchdog" placeholder="Valor watchdog">
+                        </div>
+                        <div class="form-group">
+                            <label>YouTube</label>
+                            <input type="text" id="ch-mode-youtube" placeholder="Valor youtube">
                         </div>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <button class="btn btn-ghost" onclick="deleteChannel()">Eliminar</button>
+                    <button class="btn btn-danger" onclick="deleteChannel()">Eliminar</button>
                     <button class="btn btn-primary" onclick="saveChannel()">Guardar Canal</button>
                 </div>
             </div>
@@ -506,17 +551,17 @@
             <div class="modal-body">
                 <input type="hidden" id="edit-category-index">
                 <div class="form-group">
-                    <label>Nombre de la Categoría</label>
-                    <input type="text" id="cat-name" placeholder="Ej: Deportes">
+                    <label>Nombre de la Categoría (title)</label>
+                    <input type="text" id="cat-title" placeholder="Ej: Deportes">
                 </div>
-                <button class="btn btn-primary" style="width: 100%;" onclick="saveCategory()">Guardar</button>
+                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="saveCategory()">Guardar</button>
             </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://mrghnngupolsgatcmevw.supabase.co/functions/v1/actualizar-canales';
-        let categories = [];
+        let catalogo = [];
         let currentCategoryIndex = 0;
         let sessionToken = localStorage.getItem("novaplay_session_token") || "";
 
@@ -532,18 +577,26 @@
             const headers = { "Content-Type": "application/json" };
             if (usarSesion && sessionToken) headers.Authorization = "Bearer " + sessionToken;
             try {
-                const response = await fetch(API_URL, { method: "POST", headers, body: JSON.stringify(body) });
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify(body)
+                });
                 const data = await response.json().catch(() => ({ error: "Respuesta inválida." }));
                 return { response, data };
-            } catch (e) { return { response: { ok: false }, data: { error: "Error de red." } }; }
+            } catch (e) {
+                return { response: { ok: false }, data: { error: "Error de red." } };
+            }
         }
 
         async function restaurarSesion() {
             if (!sessionToken) return;
-            const { response } = await fetchJSON({ action: "verificar_sesion" }, true);
-            if (response.ok) {
+            // Validamos sesión llamando a obtener_json, si falla es que el token no sirve
+            const { response, data } = await fetchJSON({ action: "obtener_json" }, true);
+            if (response.ok && data.success) {
+                catalogo = data.json || [];
                 UI_MostrarPanel();
-                await loadData();
+                renderCategories();
             } else {
                 cerrarSesion();
             }
@@ -562,15 +615,15 @@
             if (!username || !password) return;
 
             btn.disabled = true;
-            btn.textContent = "VERIFICANDO...";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFICANDO...';
 
             const { response, data } = await fetchJSON({ action: "login", username, password });
 
             if (response.ok && data.token) {
                 sessionToken = data.token;
                 localStorage.setItem("novaplay_session_token", sessionToken);
-                UI_MostrarPanel();
                 await loadData();
+                UI_MostrarPanel();
             } else {
                 mostrarEstado(statusId, "error", "Acceso denegado.");
                 btn.disabled = false;
@@ -585,8 +638,8 @@
 
         async function loadData() {
             const { response, data } = await fetchJSON({ action: "obtener_json" }, true);
-            if (response.ok) {
-                categories = data || [];
+            if (response.ok && data.success) {
+                catalogo = data.json || [];
                 renderCategories();
             } else {
                 alert('Error al cargar datos: ' + (data.error || 'Sesión expirada'));
@@ -595,9 +648,13 @@
         }
 
         async function saveData() {
-            const { response, data } = await fetchJSON({ action: "guardar_json", data: categories }, true);
-            if (response.ok) {
-                alert('Datos guardados correctamente');
+            const { response, data } = await fetchJSON({
+                action: "guardar_json",
+                content: JSON.stringify(catalogo)
+            }, true);
+
+            if (response.ok && data.success) {
+                alert('Datos guardados correctamente en Supabase');
             } else {
                 alert('Error al guardar: ' + (data.error || 'Desconocido'));
             }
@@ -607,11 +664,11 @@
         function renderCategories() {
             const list = document.getElementById('category-list');
             list.innerHTML = '';
-            categories.forEach((cat, index) => {
+            catalogo.forEach((cat, index) => {
                 const item = document.createElement('div');
                 item.className = `category-item ${index === currentCategoryIndex ? 'active' : ''}`;
                 item.innerHTML = `
-                    <span><i class="fas fa-folder mr-2"></i> ${cat.name}</span>
+                    <span><i class="fas fa-folder"></i> ${cat.title}</span>
                     <div class="actions">
                         <button class="btn-icon" onclick="openCategoryModal(${index})"><i class="fas fa-edit"></i></button>
                         <button class="btn-icon" onclick="deleteCategory(${index})"><i class="fas fa-trash"></i></button>
@@ -624,16 +681,18 @@
                 list.appendChild(item);
             });
 
-            // Enable Category Drag & Drop
-            new Sortable(list, {
-                animation: 150,
-                onEnd: (evt) => {
-                    const movedItem = categories.splice(evt.oldIndex, 1)[0];
-                    categories.splice(evt.newIndex, 0, movedItem);
-                    currentCategoryIndex = evt.newIndex;
-                }
-            });
-
+            // Reorder categories
+            if (!list._sortable) {
+                list._sortable = new Sortable(list, {
+                    animation: 150,
+                    onEnd: (evt) => {
+                        const movedItem = catalogo.splice(evt.oldIndex, 1)[0];
+                        catalogo.splice(evt.newIndex, 0, movedItem);
+                        currentCategoryIndex = evt.newIndex;
+                        renderCategories();
+                    }
+                });
+            }
             renderChannels();
         }
 
@@ -646,9 +705,9 @@
             const list = document.getElementById('channel-list');
             list.innerHTML = '';
 
-            if (!categories[currentCategoryIndex]) return;
+            if (!catalogo[currentCategoryIndex]) return;
 
-            const channels = categories[currentCategoryIndex].channels || [];
+            const channels = catalogo[currentCategoryIndex].items || [];
 
             channels.forEach((ch, index) => {
                 if (filter && !ch.name.toLowerCase().includes(filter.toLowerCase())) return;
@@ -656,26 +715,28 @@
                 const card = document.createElement('div');
                 card.className = 'channel-card';
                 card.innerHTML = `
-                    <img src="${ch.logo}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=?'">
+                    <img src="${ch.icono}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=?'">
                     <div class="channel-info">
                         <h3>${ch.name}</h3>
-                        <p>${ch.mode.toUpperCase()} | ${ch.visible ? 'Activo' : 'Oculto'}</p>
+                        <p>#${ch.canal || '?'} | ${ch.status === 'true' ? 'Activo' : 'Inactivo'}</p>
                     </div>
-                    <button class="btn-icon" onclick="openChannelModal(${index})"><i class="fas fa-cog"></i></button>
+                    <button class="btn-icon" onclick="openChannelModal(${index})"><i class="fas fa-edit"></i></button>
                 `;
                 list.appendChild(card);
             });
 
-            // Enable Channel Drag & Drop
-            new Sortable(list, {
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onEnd: (evt) => {
-                    const chs = categories[currentCategoryIndex].channels;
-                    const movedItem = chs.splice(evt.oldIndex, 1)[0];
-                    chs.splice(evt.newIndex, 0, movedItem);
-                }
-            });
+            // Reorder channels
+            if (!list._sortable) {
+                list._sortable = new Sortable(list, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: (evt) => {
+                        const chs = catalogo[currentCategoryIndex].items;
+                        const movedItem = chs.splice(evt.oldIndex, 1)[0];
+                        chs.splice(evt.newIndex, 0, movedItem);
+                    }
+                });
+            }
         }
 
         function filterChannels() {
@@ -686,20 +747,20 @@
         // --- CRUD Categories ---
         function openCategoryModal(index = -1) {
             document.getElementById('edit-category-index').value = index;
-            document.getElementById('cat-name').value = index >= 0 ? categories[index].name : '';
+            document.getElementById('cat-title').value = index >= 0 ? catalogo[index].title : '';
             document.getElementById('category-modal').style.display = 'flex';
         }
 
         function saveCategory() {
             const index = parseInt(document.getElementById('edit-category-index').value);
-            const name = document.getElementById('cat-name').value;
-            if (!name) return;
+            const title = document.getElementById('cat-title').value.trim();
+            if (!title) return;
 
             if (index >= 0) {
-                categories[index].name = name;
+                catalogo[index].title = title;
             } else {
-                categories.push({ name, channels: [] });
-                currentCategoryIndex = categories.length - 1;
+                catalogo.push({ title, items: [] });
+                currentCategoryIndex = catalogo.length - 1;
             }
             closeModal('category-modal');
             renderCategories();
@@ -707,7 +768,7 @@
 
         function deleteCategory(index) {
             if (confirm('¿Eliminar esta categoría y todos sus canales?')) {
-                categories.splice(index, 1);
+                catalogo.splice(index, 1);
                 currentCategoryIndex = 0;
                 renderCategories();
             }
@@ -715,23 +776,32 @@
 
         // --- CRUD Channels ---
         function openChannelModal(index = -1) {
-            if (!categories[currentCategoryIndex]) return alert('Cree una categoría primero');
+            if (catalogo.length === 0) return alert('Cree una categoría primero');
 
             document.getElementById('edit-channel-index').value = index;
-            const ch = index >= 0 ? categories[currentCategoryIndex].channels[index] : {
-                name: '', logo: '', url: '', url2: '', referer: '', ua: '', key: '', mode: 'direct', visible: true, epg: ''
+            const ch = index >= 0 ? catalogo[currentCategoryIndex].items[index] : {
+                name: '', icono: '', canal: '', status: 'true', NSFW: 'NO',
+                url: '', url2: '', referer: '', origin: '', user: '',
+                drm_license_uri: '', drm_license_uri2: '',
+                web: '', VLC: '', watchdog: '', youtube: ''
             };
 
-            document.getElementById('ch-name').value = ch.name;
-            document.getElementById('ch-logo').value = ch.logo;
-            document.getElementById('ch-url').value = ch.url;
-            document.getElementById('ch-url2').value = ch.url2;
-            document.getElementById('ch-referer').value = ch.referer;
-            document.getElementById('ch-ua').value = ch.ua;
-            document.getElementById('ch-key').value = ch.key;
-            document.getElementById('ch-mode').value = ch.mode;
-            document.getElementById('ch-visible').value = ch.visible.toString();
-            document.getElementById('ch-epg').value = ch.epg;
+            document.getElementById('ch-name').value = ch.name || '';
+            document.getElementById('ch-icono').value = ch.icono || '';
+            document.getElementById('ch-canal').value = ch.canal || '';
+            document.getElementById('ch-status').value = ch.status || 'true';
+            document.getElementById('ch-nsfw').value = ch.NSFW || 'NO';
+            document.getElementById('ch-url').value = ch.url || '';
+            document.getElementById('ch-url2').value = ch.url2 || '';
+            document.getElementById('ch-referer').value = ch.referer || '';
+            document.getElementById('ch-origin').value = ch.origin || '';
+            document.getElementById('ch-user').value = ch.user || '';
+            document.getElementById('ch-drm1').value = ch.drm_license_uri || '';
+            document.getElementById('ch-drm2').value = ch.drm_license_uri2 || '';
+            document.getElementById('ch-mode-web').value = ch.web || '';
+            document.getElementById('ch-mode-vlc').value = ch.VLC || '';
+            document.getElementById('ch-mode-watchdog').value = ch.watchdog || '';
+            document.getElementById('ch-mode-youtube').value = ch.youtube || '';
 
             document.getElementById('modal-title').innerText = index >= 0 ? 'Editar Canal' : 'Nuevo Canal';
             document.getElementById('channel-modal').style.display = 'flex';
@@ -740,24 +810,30 @@
         function saveChannel() {
             const index = parseInt(document.getElementById('edit-channel-index').value);
             const ch = {
-                name: document.getElementById('ch-name').value,
-                logo: document.getElementById('ch-logo').value,
-                url: document.getElementById('ch-url').value,
-                url2: document.getElementById('ch-url2').value,
-                referer: document.getElementById('ch-referer').value,
-                ua: document.getElementById('ch-ua').value,
-                key: document.getElementById('ch-key').value,
-                mode: document.getElementById('ch-mode').value,
-                visible: document.getElementById('ch-visible').value === 'true',
-                epg: document.getElementById('ch-epg').value
+                name: document.getElementById('ch-name').value.trim(),
+                icono: document.getElementById('ch-icono').value.trim(),
+                canal: document.getElementById('ch-canal').value.trim(),
+                status: document.getElementById('ch-status').value,
+                NSFW: document.getElementById('ch-nsfw').value,
+                url: document.getElementById('ch-url').value.trim(),
+                url2: document.getElementById('ch-url2').value.trim(),
+                referer: document.getElementById('ch-referer').value.trim(),
+                origin: document.getElementById('ch-origin').value.trim(),
+                user: document.getElementById('ch-user').value.trim(),
+                drm_license_uri: document.getElementById('ch-drm1').value.trim(),
+                drm_license_uri2: document.getElementById('ch-drm2').value.trim(),
+                web: document.getElementById('ch-mode-web').value.trim(),
+                VLC: document.getElementById('ch-mode-vlc').value.trim(),
+                watchdog: document.getElementById('ch-mode-watchdog').value.trim(),
+                youtube: document.getElementById('ch-mode-youtube').value.trim()
             };
 
-            if (!ch.name || !ch.url) return alert('Nombre y URL son obligatorios');
+            if (!ch.name) return alert('El nombre es obligatorio');
 
             if (index >= 0) {
-                categories[currentCategoryIndex].channels[index] = ch;
+                catalogo[currentCategoryIndex].items[index] = ch;
             } else {
-                categories[currentCategoryIndex].channels.push(ch);
+                catalogo[currentCategoryIndex].items.push(ch);
             }
             closeModal('channel-modal');
             renderChannels();
@@ -766,7 +842,7 @@
         function deleteChannel() {
             const index = parseInt(document.getElementById('edit-channel-index').value);
             if (index >= 0 && confirm('¿Eliminar este canal?')) {
-                categories[currentCategoryIndex].channels.splice(index, 1);
+                catalogo[currentCategoryIndex].items.splice(index, 1);
                 closeModal('channel-modal');
                 renderChannels();
             }
@@ -776,10 +852,9 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // Initialize
+        // Init
         document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
         restaurarSesion();
-
     </script>
 </body>
 </html>
