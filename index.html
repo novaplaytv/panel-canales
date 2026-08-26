@@ -582,25 +582,58 @@
     }
 
     async function saveEventos() {
+        if (!eventosData) return;
+
+        const marquee = document.getElementById('event-marquee').value.trim();
+        const active = document.getElementById('event-active').value === 'true';
+        const date = document.getElementById('event-date').value;
+        const date_until = document.getElementById('event-date-until').value;
+        const start_time = document.getElementById('event-start-time').value;
+        const end_time = document.getElementById('event-end-time').value;
+
+        const popup_title = document.getElementById('popup-title').value.trim();
+        const popup_active = document.getElementById('popup-active').value === 'true';
+        const popup_paragraphs = document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '');
+
+        // Detectar cambios en sección Notificación (Marquee)
+        const marqueeChanged = marquee !== (eventosData.marquee || '') ||
+                               active !== (eventosData.active || false) ||
+                               date !== (eventosData.date || '') ||
+                               date_until !== (eventosData.date_until || '') ||
+                               start_time !== (eventosData.start_time || '') ||
+                               end_time !== (eventosData.end_time || '');
+
+        // Detectar cambios en sección Pop-up
+        const popupChanged = popup_title !== (eventosData.popup_title || '') ||
+                             popup_active !== (eventosData.popup_active || false) ||
+                             JSON.stringify(popup_paragraphs) !== JSON.stringify(eventosData.popup_paragraphs || []);
+
+        if (!marqueeChanged && !popupChanged) {
+            return novaToast('No se detectaron cambios', 'info');
+        }
+
         const newEventos = {
-            marquee: document.getElementById('event-marquee').value.trim(),
-            active: document.getElementById('event-active').value === 'true',
-            version: (parseInt(document.getElementById('event-version').value) || 0) + 1,
-            date: document.getElementById('event-date').value,
-            date_until: document.getElementById('event-date-until').value,
-            start_time: document.getElementById('event-start-time').value,
-            end_time: document.getElementById('event-end-time').value,
-            popup_title: document.getElementById('popup-title').value.trim(),
-            popup_version: (parseInt(document.getElementById('popup-version').value) || 0) + 1,
-            popup_active: document.getElementById('popup-active').value === 'true',
-            popup_paragraphs: document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '')
+            marquee,
+            active,
+            version: marqueeChanged ? (parseInt(eventosData.version) || 0) + 1 : (parseInt(eventosData.version) || 0),
+            date,
+            date_until,
+            start_time,
+            end_time,
+            popup_title,
+            popup_version: popupChanged ? (parseInt(eventosData.popup_version) || 0) + 1 : (parseInt(eventosData.popup_version) || 0),
+            popup_active,
+            popup_paragraphs
         };
+
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
         if (response.ok && data.success) {
-            novaToast('Notificaciones guardadas y versiones incrementadas', 'success');
+            novaToast('Notificaciones actualizadas con éxito', 'success');
             eventosData = newEventos;
             renderEventsEditor();
-        } else { novaToast('Error al guardar notificaciones', 'error'); }
+        } else {
+            novaToast('Error al guardar notificaciones', 'error');
+        }
     }
 
     function updateStats() {
