@@ -27,6 +27,7 @@ button{min-height:44px;border:0;border-radius:9px;padding:10px 16px;background:v
 <a href="https://novaplaytv.github.io/">INICIO</a><a href="https://novaplaytv.github.io/novaimg/">NOVAIMG</a><a href="https://novaplaytv.github.io/DEMO-NOVAPLAY/">DEMO</a>
 <a class="active panel-link" href="https://novaplaytv.github.io/panel-canales/">PANEL CANALES</a>
 <a class="panel-link" href="https://novaplaytv.github.io/novaimg/actualizar-icono/">PANEL IMÁGENES</a>
+<button id="navLogout" class="btn-danger btn-small" style="display:none; margin-left:auto; width:auto; min-height:36px;" onclick="cerrarSesion()">Cerrar sesión</button>
 </div></nav>
 <header><div class="header-container"><div class="header-title"><img class="header-icon" src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp" alt="NOVAPLAY"><div><h1>NOVAPLAY</h1><p>Gestión de categorías y canales</p></div></div></div></header>
 <main>
@@ -35,7 +36,7 @@ button{min-height:44px;border:0;border-radius:9px;padding:10px 16px;background:v
 <div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password"></div>
 <button id="loginButton" onclick="iniciarSesion()">Ingresar</button><div id="loginStatus" class="status"></div></div></div>
 <div class="panel" id="panel"><div class="card">
-<div class="panel-header"><div><h2>Gestión de canales</h2><div style="color:#6b7280;font-size:14px">Selecciona una categoría para administrar sus canales.</div></div><button class="btn-danger" onclick="cerrarSesion()">Cerrar sesión</button></div>
+<div class="panel-header"><div><h2>Gestión de canales</h2><div style="color:#6b7280;font-size:14px">Selecciona una categoría para administrar sus canales.</div></div></div>
 <hr class="divider">
 <div class="category-toolbar"><div class="field"><label for="categoria">Categoría</label><select id="categoria"><option value="">Selecciona una categoría</option></select></div><button onclick="nuevaCategoria()">+ Nueva categoría</button></div>
 <div class="category-actions"><button class="btn-secondary" onclick="editarCategoria()">Editar categoría</button><button class="btn-danger" onclick="eliminarCategoria()">Eliminar categoría</button></div>
@@ -85,8 +86,8 @@ async function api(body,authenticated=false){const headers={"Content-Type":"appl
 
 async function iniciarSesion(){const username=document.getElementById("username").value.trim(),password=document.getElementById("password").value,button=document.getElementById("loginButton");ocultarEstado("loginStatus");if(!username||!password){estado("loginStatus","error","Completa usuario y contraseña.");return}button.disabled=true;button.textContent="Verificando...";try{const r=await api({action:"login",username,password});if(!r.response.ok)throw new Error(r.data.error||"Usuario o contraseña incorrectos.");if(!r.data.token)throw new Error("El servidor no devolvió una sesión válida.");sessionToken=r.data.token;localStorage.setItem("novaplay_session_token",sessionToken);document.getElementById("password").value="";mostrarPanel();await cargarJSON()}catch(e){estado("loginStatus","error",e.message||"No se pudo iniciar sesión.")}finally{button.disabled=false;button.textContent="Ingresar"}}
 async function restaurarSesion(){if(!sessionToken)return;try{const r=await api({action:"verificar_sesion"},true);if(r.response.status===401)throw new Error("SESSION_INVALID");if(!r.response.ok)return;mostrarPanel();await cargarJSON()}catch(e){if(e.message==="SESSION_INVALID")cerrarSesion()}}
-function mostrarPanel(){document.getElementById("loginContainer").style.display="none";document.getElementById("panel").style.display="block"}
-function cerrarSesion(){sessionToken="";localStorage.removeItem("novaplay_session_token");document.getElementById("panel").style.display="none";document.getElementById("loginContainer").style.display="block";catalogo=[];categoriaActual=-1;canalActual=-1}
+function mostrarPanel(){document.getElementById("loginContainer").style.display="none";document.getElementById("panel").style.display="block";document.getElementById("navLogout").style.display="block"}
+function cerrarSesion(){sessionToken="";localStorage.removeItem("novaplay_session_token");document.getElementById("panel").style.display="none";document.getElementById("loginContainer").style.display="block";document.getElementById("navLogout").style.display="none";catalogo=[];categoriaActual=-1;canalActual=-1}
 
 async function cargarJSON(){estado("status","info","Cargando novaplay.json...");try{const r=await api({action:"obtener_json"},true);if(r.response.status===401){cerrarSesion();estado("loginStatus","error","La sesión expiró.");return}if(!r.response.ok)throw new Error(r.data.error||"No se pudo cargar novaplay.json.");let json=r.data.json;if(typeof json==="string")json=JSON.parse(json);if(!Array.isArray(json))throw new Error("novaplay.json debe contener un array de categorías.");catalogo=json;catalogo.forEach(cat=>{if(Array.isArray(cat.items)){cat.items.forEach(c=>{c.status=normalizarEstado(c.status)?"true":"false";});}});categoriaActual=-1;canalActual=-1;renderCategorias();renderChannels();ocultarEstado("status")}catch(e){estado("status","error",e.message)}}
 
