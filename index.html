@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NovaPlay | Channel Manager</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
@@ -34,6 +35,61 @@
             color: var(--text-main);
             height: 100vh;
             display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- Navigation Bar --- */
+        .nova-nav {
+            background-color: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 1500;
+            flex-shrink: 0;
+        }
+
+        .nova-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-bright);
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nova-nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nova-nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nova-nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nova-nav-auth {
+            display: flex;
+            gap: 16px;
+        }
+
+        .app-container {
+            display: flex;
+            flex-grow: 1;
             overflow: hidden;
         }
 
@@ -423,7 +479,21 @@
 </head>
 <body>
 
-    <!-- Auth View -->
+    <nav class="nova-nav">
+        <a href="#" class="nova-nav-brand">NovaPlay</a>
+        <div class="nova-nav-links">
+            <a href="#">INICIO</a>
+            <a href="#">DEMO</a>
+            <a href="#">ICONOS</a>
+        </div>
+        <div class="nova-nav-auth">
+            <button id="navLogin" class="btn btn-primary" onclick="location.reload()">INGRESAR</button>
+            <button id="navLogout" class="btn btn-ghost hidden" onclick="cerrarSesion()">SALIR</button>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Auth View -->
     <div id="auth-view">
         <div class="auth-card">
             <h2 style="color: var(--text-bright); margin-bottom: 8px;">NovaPlay</h2>
@@ -488,6 +558,7 @@
             <!-- Channels rendered here -->
         </div>
     </main>
+</div>
 
     <!-- Channel Modal -->
     <div id="channel-modal" class="modal-overlay">
@@ -659,7 +730,11 @@
         }
 
         async function restaurarSesion() {
-            if (!sessionToken) return;
+            if (!sessionToken) {
+                document.getElementById("navLogin").classList.remove("hidden");
+                document.getElementById("navLogout").classList.add("hidden");
+                return;
+            }
             // Validamos sesión llamando a obtener_json, si falla es que el token no sirve
             const { response, data } = await fetchJSON({ action: "obtener_json" }, true);
             if (response.ok && data.success) {
@@ -673,6 +748,8 @@
 
         function UI_MostrarPanel() {
             document.getElementById("auth-view").classList.add("hidden");
+            document.getElementById("navLogin").classList.add("hidden");
+            document.getElementById("navLogout").classList.remove("hidden");
         }
 
         async function iniciarSesion() {
