@@ -454,11 +454,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid-3">
-                    <div class="form-group">
-                        <label>Número de Canal (canal)</label>
-                        <input type="text" id="ch-canal" placeholder="Ej: 101">
-                    </div>
+                <div class="grid-2">
                     <div class="form-group">
                         <label>Estado (status)</label>
                         <select id="ch-status">
@@ -988,13 +984,12 @@
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
         const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
-            name: '', icono: '', canal: '', status: 'true', NSFW: 'NO',
+            name: '', icono: '', status: 'true', NSFW: 'NO',
             url: '', url2: '', Referer: '', Origin: '', 'User-Agent': '',
             drm_license_uri: '', drm_license_uri2: ''
         };
         document.getElementById('ch-name').value = ch.name || '';
         document.getElementById('ch-icono').value = ch.icono || '';
-        document.getElementById('ch-canal').value = ch.canal || '';
         document.getElementById('ch-status').value = String(ch.status) || 'true';
         document.getElementById('ch-nsfw').value = ch.NSFW || 'NO';
         document.getElementById('ch-url').value = ch.url || '';
@@ -1016,7 +1011,6 @@
             ...existingCh,
             name: document.getElementById('ch-name').value.trim(),
             icono: document.getElementById('ch-icono').value.trim(),
-            canal: document.getElementById('ch-canal').value.trim(),
             status: document.getElementById('ch-status').value,
             NSFW: document.getElementById('ch-nsfw').value,
             url: document.getElementById('ch-url').value.trim(),
