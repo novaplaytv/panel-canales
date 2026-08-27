@@ -705,7 +705,7 @@
     }
 
     async function saveData() {
-        const { response, data } = await fetchJSON({ action: "guardar_json", content: JSON.stringify(catalogo) }, true);
+        const { response, data } = await fetchJSON({ action: "guardar_json", content: JSON.stringify(catalogo, null, 2) }, true);
         if (response.ok && data.success) { novaToast('Datos guardados correctamente', 'success'); }
         else { novaToast('Error al guardar: ' + (data.error || 'Desconocido'), 'error'); }
     }
