@@ -191,6 +191,7 @@
         .sortable-ghost { opacity: 0.3; border: 2px dashed var(--primary); }
 
         @media (max-width: 900px) {
+            :root { --nav-height: 60px; --sidebar-width: 100%; }
             .nav-inner { padding: 0 15px; }
             .nav-toggle { display: flex; }
             .nav-links {
@@ -198,6 +199,7 @@
                 background: rgba(8, 10, 16, 0.98); backdrop-filter: blur(20px);
                 flex-direction: column; justify-content: center; align-items: center;
                 transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); gap: 20px; padding: 40px;
+                z-index: 9999;
             }
             .nav-links.active { right: 0; }
             .nav-links a { font-size: 18px; width: 100%; text-align: center; padding: 15px; border-radius: 15px; }
@@ -206,21 +208,51 @@
             .nav-toggle.active span:nth-child(2) { opacity: 0; }
             .nav-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
-            .app-container { flex-direction: column; margin-top: var(--nav-height); height: calc(100% - var(--nav-height)); }
+            .app-container { flex-direction: column; height: calc(100% - var(--nav-height)); overflow-y: auto; }
+
             #sidebar {
-                width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border);
-                max-height: 250px; overflow-y: auto;
+                width: 100%; border-right: none; border-bottom: 1px solid var(--border);
+                padding: 10px; flex-shrink: 0;
             }
-            #sidebar.hidden-mobile { display: none; }
+            #category-list {
+                display: flex; flex-direction: row; overflow-x: auto; overflow-y: hidden;
+                padding: 5px; gap: 8px; scrollbar-width: none; -ms-overflow-style: none;
+            }
+            #category-list::-webkit-scrollbar { display: none; }
+            .category-item {
+                white-space: nowrap; flex-shrink: 0; padding: 8px 15px; margin-bottom: 0;
+                font-size: 13px; border: 1px solid var(--border);
+            }
+            .category-item.special { border-bottom: 1px solid var(--border); margin-bottom: 0; padding-bottom: 8px; border-radius: 12px; }
+            #draggable-categories { display: flex; gap: 8px; }
+            .category-item .actions { display: none; } /* Hide edit/delete on mobile horizontal list */
 
-            header { padding: 15px; flex-direction: column; gap: 15px; align-items: stretch; }
-            .header-left { flex-direction: column; align-items: stretch; }
+            #main-content { height: auto; overflow: visible; }
+            header { padding: 15px; flex-direction: column; gap: 15px; background: var(--bg); }
+            .header-left { flex-direction: column; gap: 10px; }
             .search-box { width: 100%; }
-            .stats-container { justify-content: space-between; }
+            .stats-container { justify-content: space-around; width: 100%; }
 
-            #channel-list { padding: 15px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-            .bulk-bar { width: 90%; flex-wrap: wrap; justify-content: center; bottom: 10px; padding: 15px; gap: 10px; }
-            .bulk-info { border-right: none; padding-right: 0; width: 100%; text-align: center; margin-bottom: 5px; }
+            .header-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+            .header-actions .btn { justify-content: center; padding: 10px; font-size: 12px; }
+            .header-actions .btn:last-child { grid-column: span 2; }
+
+            #channel-list {
+                padding: 10px; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 10px; overflow: visible;
+            }
+            .channel-card { padding: 10px; gap: 10px; flex-direction: column; text-align: center; }
+            .channel-logo { width: 40px; height: 40px; }
+            .channel-info h3 { font-size: 13px; }
+            .channel-cat-tag { font-size: 8px; top: 5px; right: 5px; }
+
+            .bulk-bar { width: 95%; bottom: 10px; padding: 10px; gap: 8px; flex-wrap: wrap; }
+            .bulk-info { font-size: 12px; width: 100%; text-align: center; border: none; padding: 0; }
+            .bulk-bar .btn { padding: 8px 12px; font-size: 11px; flex: 1; }
+
+            .modal { width: 95%; border-radius: 20px; }
+            .modal-body { padding: 20px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -298,7 +330,7 @@
                     </div>
                 </div>
             </div>
-            <div style="display:flex; gap:12px;">
+            <div class="header-actions" style="display:flex; gap:12px;">
                 <button class="btn btn-primary" id="new-channel-btn" onclick="openChannelModal()">
                     <i class="fas fa-plus"></i> <span>Nuevo Canal</span>
                 </button>
