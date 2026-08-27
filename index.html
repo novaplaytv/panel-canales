@@ -705,13 +705,31 @@
     }
 
     async function saveData() {
-        const { response, data } = await fetchJSON({ action: "guardar_json", content: JSON.stringify(catalogo, null, 2) }, true);
+        // Eliminar propiedad 'canal' de todos los items antes de enviar
+        const dataToSave = JSON.parse(JSON.stringify(catalogo));
+        dataToSave.forEach(cat => {
+            if (cat.items) {
+                cat.items.forEach(ch => {
+                    delete ch.canal;
+                });
+            }
+        });
+
+        const { response, data } = await fetchJSON({ action: "guardar_json", content: JSON.stringify(dataToSave, null, 2) }, true);
         if (response.ok && data.success) { novaToast('Datos guardados correctamente', 'success'); }
         else { novaToast('Error al guardar: ' + (data.error || 'Desconocido'), 'error'); }
     }
 
     function downloadBackup() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(catalogo, null, 4));
+        const dataToBackup = JSON.parse(JSON.stringify(catalogo));
+        dataToBackup.forEach(cat => {
+            if (cat.items) {
+                cat.items.forEach(ch => {
+                    delete ch.canal;
+                });
+            }
+        });
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToBackup, null, 4));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", "novaplay_backup_" + new Date().toISOString().slice(0, 10) + ".json");
@@ -857,7 +875,7 @@
                 <img src="${ch.icono}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=?'">
                 <div class="channel-info">
                     <h3>${ch.name}</h3>
-                    <p>#${ch.canal || '?'} | ${String(ch.status) === 'true' ? 'Activo' : 'Inactivo'}</p>
+                    <p>${String(ch.status) === 'true' ? 'Activo' : 'Inactivo'}</p>
                 </div>
                 ${currentCategoryIndex < 0 ? `<span class="channel-cat-tag">${ch.catTitle}</span>` : ''}
                 <button class="btn-icon" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.4); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 1; z-index: 10;" onclick="openChannelModal(${ch.chIdx}, ${ch.catIdx})">
