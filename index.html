@@ -713,6 +713,12 @@
                 });
             });
             renderCategories();
+
+            // Restaurar última posición (Solo mientras la pestaña esté abierta)
+            const lastCat = sessionStorage.getItem("last_cat_idx");
+            if (lastCat !== null) {
+                selectCategory(parseInt(lastCat));
+            }
         } else {
             novaToast('Error al cargar datos: ' + (data.error || 'Sesión expirada'), 'error');
             if (response.status === 401) cerrarSesion();
@@ -862,6 +868,7 @@
 
     function selectCategory(index) {
         currentCategoryIndex = index;
+        sessionStorage.setItem("last_cat_idx", index);
         clearSelection();
         if (index === -3) {
             document.getElementById('main-content').classList.add('hidden');
