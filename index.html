@@ -441,8 +441,13 @@
                         <input type="text" id="ch-name" placeholder="Ej: HBO HD">
                     </div>
                     <div class="form-group">
-                        <label>Logo URL (icono)</label>
-                        <div style="display: flex; gap: 8px;">
+                        <label>Información / Evento (info)</label>
+                        <input type="text" id="ch-info" placeholder="Ej: EVENTOS">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Logo URL (icono)</label>
+                    <div style="display: flex; gap: 8px;">
                             <input type="text" id="ch-icono" placeholder="https://...">
                             <button class="btn btn-ghost" onclick="openIconBrowser()" title="Buscar en Galería">
                                 <i class="fas fa-search"></i>
@@ -705,12 +710,18 @@
     }
 
     async function saveData() {
-        // Eliminar propiedad 'canal' de todos los items antes de enviar
+        // Limpieza profunda antes de guardar
         const dataToSave = JSON.parse(JSON.stringify(catalogo));
         dataToSave.forEach(cat => {
             if (cat.items) {
                 cat.items.forEach(ch => {
+                    // Eliminar 'canal' y campos vacíos
                     delete ch.canal;
+                    Object.keys(ch).forEach(key => {
+                        if (ch[key] === "" || ch[key] === null || ch[key] === undefined) {
+                            delete ch[key];
+                        }
+                    });
                 });
             }
         });
@@ -726,6 +737,11 @@
             if (cat.items) {
                 cat.items.forEach(ch => {
                     delete ch.canal;
+                    Object.keys(ch).forEach(key => {
+                        if (ch[key] === "" || ch[key] === null || ch[key] === undefined) {
+                            delete ch[key];
+                        }
+                    });
                 });
             }
         });
@@ -1002,11 +1018,12 @@
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
         const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
-            name: '', icono: '', status: 'true', NSFW: 'NO',
+            name: '', info: '', icono: '', status: 'true', NSFW: 'NO',
             url: '', url2: '', Referer: '', Origin: '', 'User-Agent': '',
             drm_license_uri: '', drm_license_uri2: ''
         };
         document.getElementById('ch-name').value = ch.name || '';
+        document.getElementById('ch-info').value = ch.info || '';
         document.getElementById('ch-icono').value = ch.icono || '';
         document.getElementById('ch-status').value = String(ch.status) || 'true';
         document.getElementById('ch-nsfw').value = ch.NSFW || 'NO';
@@ -1025,9 +1042,12 @@
         const chIndex = parseInt(document.getElementById('edit-channel-index').value);
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
         const existingCh = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {};
+        const info = document.getElementById('ch-info').value.trim();
         const ch = {
             ...existingCh,
             name: document.getElementById('ch-name').value.trim(),
+            info: info,
+            "CH-events": info ? "yes" : "",
             icono: document.getElementById('ch-icono').value.trim(),
             status: document.getElementById('ch-status').value,
             NSFW: document.getElementById('ch-nsfw').value,
