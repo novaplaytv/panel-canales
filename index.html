@@ -27,7 +27,7 @@
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
         html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* NavegaciÃ³n Premium */
+        /* Navegación Premium */
         .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         .nav-inner { max-width: 1400px; margin: auto; height: var(--nav-height); padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
@@ -58,7 +58,7 @@
         .btn-login-nav:hover, .btn-logout:hover { transform: scale(1.05); background: var(--primary-hover); }
         .btn-logout { background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
-        /* Dropdown de AdministraciÃ³n Premium - FIX DEFINITIVO */
+        /* Dropdown de Administración Premium - FIX DEFINITIVO */
         .admin-menu { position: relative; display: none; padding: 10px 0; margin: -10px 0; }
         .btn-admin { background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; padding: 10px 20px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.2s; position: relative; z-index: 10002; }
         .btn-admin:hover { background: var(--primary); color: #fff; box-shadow: 0 0 20px rgba(229,9,20,0.4); }
@@ -90,7 +90,7 @@
 
         .search-box { position: relative; width: 300px; }
         .search-box input { width: 100%; padding: 12px 15px 12px 40px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; }
-        .search-box::before { content: "ðŸ”"; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; }
+        .search-box::before { content: "🔍"; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; }
 
         .stats-container { display: flex; gap: 10px; margin-right: 15px; }
         .stat-chip { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
@@ -280,10 +280,10 @@
             <img src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp" alt="Logo">
             <div style="display: flex; flex-direction: column; line-height: 1;">
                 NOVAPLAY | ADMIN. DE CANALES
-                <span id="statusBadge" style="font-size: 8px; font-weight: 800; margin-top: 4px; letter-spacing: 0; opacity: 0.8;">ðŸŸ¢ CARGANDO...</span>
+                <span id="statusBadge" style="font-size: 8px; font-weight: 800; margin-top: 4px; letter-spacing: 0; opacity: 0.8;">🟢 CARGANDO...</span>
             </div>
         </a>
-        <button class="nav-toggle" id="navToggle" aria-label="Abrir menÃº">
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
             <span></span>
             <span></span>
             <span></span>
@@ -299,9 +299,9 @@
                     <a href="https://novaplaytv.github.io/Dashboard/"><i class="fas fa-chart-line"></i> Dashboard Central</a>
                     <a href="https://novaplaytv.github.io/panel-canales/"><i class="fas fa-tv"></i> Admin. Canales</a>
                     <a href="https://novaplaytv.github.io/NovaSecurity/"><i class="fas fa-shield-alt"></i> NovaSecurity</a>
-                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de SeÃ±al</a>
-                    <a href="https://novaplaytv.github.io/novaimg/"><i class="fas fa-icons"></i> GestiÃ³n de Iconos</a>
-                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar SesiÃ³n</a>
+                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de Señal</a>
+                    <a href="https://novaplaytv.github.io/novaimg/"><i class="fas fa-icons"></i> Gestión de Iconos</a>
+                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
                 </div>
             </div>
         </div>
@@ -316,8 +316,8 @@
             <input type="text" id="username" placeholder="Usuario" autocomplete="username">
         </div>
         <div class="form-group" style="text-align: left;">
-            <label>ContraseÃ±a</label>
-            <input type="password" id="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; margin-top:10px; padding: 18px;" onclick="iniciarSesion()">ENTRAR AL PANEL</button>
         <div id="loginStatus" class="status"></div>
@@ -335,7 +335,7 @@
         <div id="category-list"></div>
         <div style="padding: 20px; border-top: 1px solid var(--border);">
             <button class="btn btn-ghost" style="width:100%; justify-content: center;" onclick="openCategoryModal()">
-                <i class="fas fa-plus-circle"></i> <span>Nueva CategorÃ­a</span>
+                <i class="fas fa-plus-circle"></i> <span>Nueva Categoría</span>
             </button>
         </div>
     </aside>
@@ -377,10 +377,10 @@
             <h2 style="margin-bottom: 20px; font-weight: 900;">Editor de Eventos y Avisos</h2>
 
             <div class="form-section">
-                <h4>ConfiguraciÃ³n de Notificaciones</h4>
+                <h4>Configuración de Notificaciones</h4>
                 <div class="form-group">
-                    <label>Texto de la NotificaciÃ³n</label>
-                    <textarea id="event-marquee" placeholder="Escriba el mensaje aquÃ­..."></textarea>
+                    <label>Texto de la Notificación</label>
+                    <textarea id="event-marquee" placeholder="Escriba el mensaje aquí..."></textarea>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
@@ -391,7 +391,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>VersiÃ³n</label>
+                        <label>Versión</label>
                         <input type="text" id="event-version" readonly style="opacity: 0.6; cursor: not-allowed;">
                     </div>
                     <div class="form-group">
@@ -419,11 +419,11 @@
                 <h4>V2 Pop-up (Aviso Emergente)</h4>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>TÃ­tulo del Pop-up</label>
-                        <input type="text" id="popup-title" placeholder="Ej: Nueva ActualizaciÃ³n">
+                        <label>Título del Pop-up</label>
+                        <input type="text" id="popup-title" placeholder="Ej: Nueva Actualización">
                     </div>
                     <div class="form-group">
-                        <label>Pop-up VersiÃ³n</label>
+                        <label>Pop-up Versión</label>
                         <input type="text" id="popup-version" readonly style="opacity: 0.6; cursor: not-allowed;">
                     </div>
                 </div>
@@ -435,13 +435,13 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>PÃ¡rrafos (Contenido del Pop-up)</label>
-                    <textarea id="popup-paragraphs" style="height: 120px;" placeholder="Ingrese cada pÃ¡rrafo en una lÃ­nea nueva..."></textarea>
+                    <label>Párrafos (Contenido del Pop-up)</label>
+                    <textarea id="popup-paragraphs" style="height: 120px;" placeholder="Ingrese cada párrafo en una línea nueva..."></textarea>
                 </div>
             </div>
 
             <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 20px; font-size: 16px;" onclick="saveEventos()">
-                <i class="fas fa-save"></i> ðŸ’¾ <span>Guardar Eventos</span>
+                <i class="fas fa-save"></i> 💾 <span>Guardar Eventos</span>
             </button>
         </div>
     </div>
@@ -459,14 +459,14 @@
             <input type="hidden" id="edit-channel-cat-index">
 
             <div class="form-section">
-                <h4>InformaciÃ³n General</h4>
+                <h4>Información General</h4>
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Nombre del Canal</label>
                         <input type="text" id="ch-name" placeholder="Ej: HBO HD">
                     </div>
                     <div class="form-group">
-                        <label>InformaciÃ³n / Evento (info)</label>
+                        <label>Información / Evento (info)</label>
                         <input type="text" id="ch-info" placeholder="Ej: EVENTOS">
                     </div>
                 </div>
@@ -475,7 +475,7 @@
                     <label>Logo URL (icono)</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="ch-icono" placeholder="https://...">
-                        <button class="btn btn-ghost" onclick="openIconBrowser()" title="Buscar en GalerÃ­a">
+                        <button class="btn btn-ghost" onclick="openIconBrowser()" title="Buscar en Galería">
                             <i class="fas fa-search"></i>
                         </button>
                         <button class="btn btn-ghost" onclick="document.getElementById('file-upload').click()" title="Subir de PC">
@@ -521,7 +521,7 @@
             </div>
 
             <div class="form-section">
-                <h4>ConfiguraciÃ³n Avanzada</h4>
+                <h4>Configuración Avanzada</h4>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>Referer</label>
@@ -566,13 +566,13 @@
 <div id="category-modal" class="modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header">
-            <h2 style="font-weight:900;">CategorÃ­a</h2>
+            <h2 style="font-weight:900;">Categoría</h2>
             <button class="btn-icon" onclick="closeModal('category-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="edit-category-index">
             <div class="form-group">
-                <label>Nombre de la CategorÃ­a (title)</label>
+                <label>Nombre de la Categoría (title)</label>
                 <input type="text" id="cat-title" placeholder="Ej: Deportes">
             </div>
             <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px;" onclick="saveCategory()">Guardar</button>
@@ -584,7 +584,7 @@
 <div id="icon-modal" class="modal-overlay">
     <div class="modal">
         <div class="modal-header">
-            <h2 style="font-weight:900;">GalerÃ­a de Iconos</h2>
+            <h2 style="font-weight:900;">Galería de Iconos</h2>
             <button class="btn-icon" onclick="closeModal('icon-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body" id="icon-browser-body">
@@ -616,8 +616,8 @@
 
 <footer>
     <div class="footer-text">
-        Â© 2026 NOVAPLAY TV<br>
-        Â© 2010 - 2026 - MSGT. TODOS LOS DERECHOS RESERVADOS
+        © 2026 NOVAPLAY TV<br>
+        © 2010 - 2026 - MSGT. TODOS LOS DERECHOS RESERVADOS
     </div>
 </footer>
 
@@ -659,7 +659,7 @@
         if (usarSesion && sessionToken) headers.Authorization = "Bearer " + sessionToken;
         try {
             const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
-            const data = await response.json().catch(() => ({ error: "Respuesta invÃ¡lida." }));
+            const data = await response.json().catch(() => ({ error: "Respuesta inválida." }));
             return { response, data };
         } catch (e) { return { response: { ok: false }, data: { error: "Error de red." } }; }
     }
@@ -726,7 +726,7 @@
         if (!file) return;
         const iconInput = document.getElementById('ch-icono');
         const originalPlaceholder = iconInput.placeholder;
-        iconInput.placeholder = "âš¡ SUBIENDO...";
+        iconInput.placeholder = "⚡ SUBIENDO...";
         iconInput.value = "";
         const fd = new FormData();
         fd.append("action", "actualizar");
@@ -752,13 +752,13 @@
             });
             renderCategories();
 
-            // Restaurar Ãºltima posiciÃ³n (Solo mientras la pestaÃ±a estÃ© abierta)
+            // Restaurar última posición (Solo mientras la pestaña esté abierta)
             const lastCat = sessionStorage.getItem("last_cat_idx");
             if (lastCat !== null) {
                 selectCategory(parseInt(lastCat));
             }
         } else {
-            novaToast('Error al cargar datos: ' + (data.error || 'SesiÃ³n expirada'), 'error');
+            novaToast('Error al cargar datos: ' + (data.error || 'Sesión expirada'), 'error');
             if (response.status === 401) cerrarSesion();
         }
     }
@@ -769,7 +769,7 @@
         dataToSave.forEach(cat => {
             if (cat.items) {
                 cat.items.forEach(ch => {
-                    // Eliminar 'canal' y campos vacÃ­os
+                    // Eliminar 'canal' y campos vacíos
                     delete ch.canal;
                     Object.keys(ch).forEach(key => {
                         if (ch[key] === "" || ch[key] === null || ch[key] === undefined) {
@@ -854,7 +854,7 @@
             v2: { ...v2, titulo, activado, popupVersion: popupChanged ? (parseInt(v2.popupVersion) || 0) + 1 : (parseInt(v2.popupVersion) || 0), parrafos }
         };
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
-        if (response.ok && data.success) { novaToast('Notificaciones actualizadas con Ã©xito', 'success'); eventosData = newEventos; renderEventsEditor(); }
+        if (response.ok && data.success) { novaToast('Notificaciones actualizadas con éxito', 'success'); eventosData = newEventos; renderEventsEditor(); }
         else { novaToast('Error al guardar notificaciones', 'error'); }
     }
 
@@ -974,8 +974,8 @@
     }
 
     // --- Bulk Action Logic ---
-    function toggleSelectChannel(e, catIdx, chIdx) {
-        if (e.target.checked) { selectedChannels.push({ catIdx, chIdx }); }
+    function toggleSelectChannel(event, catIdx, chIdx) {
+        if (event.target.checked) { selectedChannels.push({ catIdx, chIdx }); }
         else { selectedChannels = selectedChannels.filter(s => !(s.catIdx === catIdx && s.chIdx === chIdx)); }
         updateBulkBar();
         renderChannels(document.getElementById('channel-search').value);
@@ -995,7 +995,7 @@
     function bulkMoveCategory() {
         if (selectedChannels.length === 0) return;
         const catNames = catalogo.map((c, i) => `${i}: ${c.title}`).join('\n');
-        const target = prompt(`Mover a categorÃ­a (ID):\n${catNames}`);
+        const target = prompt(`Mover a categoría (ID):\n${catNames}`);
         const targetIdx = parseInt(target);
         if (isNaN(targetIdx) || !catalogo[targetIdx]) return;
 
@@ -1019,7 +1019,7 @@
     }
 
     function bulkDelete() {
-        if (selectedChannels.length === 0 || !confirm('Â¿Eliminar los canales seleccionados?')) return;
+        if (selectedChannels.length === 0 || !confirm('¿Eliminar los canales seleccionados?')) return;
         // Group by cat and delete in reverse ch order
         const grouped = {};
         selectedChannels.forEach(s => { if (!grouped[s.catIdx]) grouped[s.catIdx] = []; grouped[s.catIdx].push(s.chIdx); });
@@ -1065,11 +1065,11 @@
         closeModal('category-modal');
         renderCategories();
     }
-    function deleteCategory(index) { if (confirm('Â¿Eliminar esta categorÃ­a?')) { catalogo.splice(index, 1); currentCategoryIndex = -1; renderCategories(); } }
+    function deleteCategory(index) { if (confirm('¿Eliminar esta categoría?')) { catalogo.splice(index, 1); currentCategoryIndex = -1; renderCategories(); } }
 
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
-        if (catalogo.length === 0) return novaToast('Cree una categorÃ­a primero', 'info');
-        if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categorÃ­a primero', 'info');
+        if (catalogo.length === 0) return novaToast('Cree una categoría primero', 'info');
+        if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categoría primero', 'info');
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
         const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
@@ -1134,12 +1134,12 @@
     function deleteChannel() {
         const chIndex = parseInt(document.getElementById('edit-channel-index').value);
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
-        if (chIndex >= 0 && confirm('Â¿Eliminar canal?')) { catalogo[catIndex].items.splice(chIndex, 1); closeModal('channel-modal'); renderChannels(); }
+        if (chIndex >= 0 && confirm('¿Eliminar canal?')) { catalogo[catIndex].items.splice(chIndex, 1); closeModal('channel-modal'); renderChannels(); }
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
 
-    // Toggle MenÃº MÃ³vil
+    // Toggle Menú Móvil
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
 
@@ -1150,7 +1150,7 @@
         });
     }
 
-    // Cerrar menÃº al clickear link (mÃ³vil)
+    // Cerrar menú al clickear link (móvil)
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             if (navToggle) navToggle.classList.remove('active');
@@ -1166,14 +1166,14 @@
                 const badge = document.getElementById('statusBadge');
                 if (data.activo) {
                     badge.style.color = '#4caf50';
-                    badge.innerText = "ðŸŸ¢ OPERATIVO";
+                    badge.innerText = "🟢 OPERATIVO";
                 } else {
                     badge.style.color = '#ffd700';
-                    badge.innerText = "ðŸŸ¡ MANTENIMIENTO";
+                    badge.innerText = "🟡 MANTENIMIENTO";
                 }
             })
             .catch(() => {
-                document.getElementById('statusBadge').innerText = "ðŸ”´ ERROR";
+                document.getElementById('statusBadge').innerText = "🔴 ERROR";
             });
     }
 
