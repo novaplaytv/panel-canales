@@ -599,6 +599,21 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="novaModal">
+    <div class="modal" style="max-width: 450px;">
+        <div class="modal-header">
+            <h2 id="novaModalTitle" style="font-weight:900;">Confirmar</h2>
+        </div>
+        <div class="modal-body" style="text-align: center; padding-top: 10px;">
+            <p id="novaModalMessage" style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;"></p>
+            <div class="grid-2">
+                <button class="btn btn-ghost" id="novaModalCancel" style="justify-content: center;">CANCELAR</button>
+                <button class="btn btn-primary" id="novaModalConfirm" style="justify-content: center;">ACEPTAR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bulk Actions Bar -->
 <div id="bulk-bar" class="bulk-bar">
     <div class="bulk-info" id="bulk-count">0 Seleccionados</div>
@@ -1011,7 +1026,8 @@
     }
 
     async function bulkDelete() {
-        if (selectedChannels.length === 0 || !confirm('¿Eliminar los canales seleccionados?')) return;
+        if (selectedChannels.length === 0) return;
+        if (!(await openModal("Eliminar Canales", `¿Estás seguro de eliminar los ${selectedChannels.length} canales seleccionados?`))) return;
 
         // Preparar lista de iconos únicos para posible borrado
         const iconosABorrar = new Set();
@@ -1044,7 +1060,7 @@
         });
 
         if (iconosABorrar.size > 0) {
-            if (confirm(`Se han detectado ${iconosABorrar.size} iconos que quedarán huérfanos. ¿Deseas eliminarlos también de GitHub?`)) {
+            if (await openModal("Limpieza de Galería", `Se han detectado ${iconosABorrar.size} iconos que quedarán huérfanos. ¿Deseas eliminarlos también de GitHub?`)) {
                 for (const file of iconosABorrar) {
                     await fetchJSON({
                         action: "seguridad_eliminar_archivo_github",
@@ -1102,7 +1118,14 @@
         closeModal('category-modal');
         renderCategories();
     }
-    function deleteCategory(index) { if (confirm('¿Eliminar esta categoría?')) { catalogo.splice(index, 1); currentCategoryIndex = -1; renderCategories(); } }
+    async function deleteCategory(index) {
+        if (await openModal("Eliminar Categoría", `¿Estás seguro de eliminar esta categoría y todos sus canales?`)) {
+            catalogo.splice(index, 1);
+            currentCategoryIndex = -1;
+            renderCategories();
+            novaToast("Categoría eliminada.");
+        }
+    }
 
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
         if (catalogo.length === 0) return novaToast('Cree una categoría primero', 'info');
@@ -1174,7 +1197,7 @@
         if (chIndex < 0) return;
 
         const ch = catalogo[catIndex].items[chIndex];
-        if (!confirm(`¿Eliminar canal "${ch.name}"?`)) return;
+        if (!(await openModal("Eliminar Canal", `¿Estás seguro de eliminar el canal "${ch.name}"?`))) return;
 
         // --- LÓGICA DE LIMPIEZA DE ICONO ---
         const iconoUrl = ch.icono || "";
@@ -1190,7 +1213,7 @@
             });
 
             if (usos === 1) {
-                if (confirm(`Este icono ("${fileName}") ya no será usado por ningún otro canal. ¿Deseas eliminarlo también de GitHub para ahorrar espacio?`)) {
+                if (await openModal("Limpieza de Icono", `Este icono ("${fileName}") ya no será usado por ningún otro canal. ¿Deseas eliminarlo también de GitHub para ahorrar espacio?`)) {
                     await fetchJSON({
                         action: "seguridad_eliminar_archivo_github",
                         repo: "novaimg",
@@ -1208,6 +1231,25 @@
         novaToast("Canal eliminado localmente.");
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function openModal(title, msg) {
+        return new Promise((resolve) => {
+            const m = document.getElementById("novaModal");
+            document.getElementById("novaModalTitle").innerText = title;
+            document.getElementById("novaModalMessage").innerText = msg;
+            m.style.display = "flex";
+
+            document.getElementById("novaModalCancel").onclick = () => {
+                m.style.display = "none";
+                resolve(false);
+            };
+            document.getElementById("novaModalConfirm").onclick = () => {
+                m.style.display = "none";
+                resolve(true);
+            };
+        });
+    }
+
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
 
     // Toggle Menú Móvil
