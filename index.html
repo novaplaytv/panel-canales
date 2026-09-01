@@ -179,12 +179,19 @@
         .icon-item img { width: 100%; height: auto; border-radius: 6px; max-height: 60px; object-fit: contain; }
         .icon-item span { display: block; font-size: 10px; color: var(--text-muted); margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        /* Auth View */
+        /* Login */
         #auth-view { position: fixed; inset: 0; background: var(--bg); z-index: 10001; display: flex; justify-content: center; align-items: center; }
-        .auth-card { width: 400px; padding: 50px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); text-align: center; }
+        .auth-card { width: 400px; padding: 50px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 35px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+        .auth-card input { width: 100%; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; color: #fff; margin-bottom: 15px; font-size: 15px; }
         .status { margin-top: 15px; padding: 14px; border-radius: 12px; font-size: 13px; font-weight: 800; display: none; text-align: center; }
-        .status.success { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
         .status.error { background: rgba(239,68,68,0.1); color: var(--error); border: 1px solid var(--error); }
+
+        .form-group-auth { text-align: left; margin-bottom: 20px; }
+        .form-group-auth label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; }
+
+        /* Auth View Legacy Override */
+        #auth-view .form-group { text-align: left; margin-bottom: 20px; }
+        #auth-view .form-group label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; }
 
         /* Toast Notification System */
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 30000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -310,18 +317,18 @@
     </div>
 </nav>
 
-<div id="auth-view">
+<div id="auth-view" class="hidden">
     <div class="auth-card">
         <h2 style="margin-bottom:30px; font-weight:900; font-size: 28px;">Acceso al Panel</h2>
-        <div class="form-group" style="text-align: left;">
+        <div class="form-group-auth">
             <label>Usuario</label>
             <input type="text" id="username" placeholder="Usuario" autocomplete="username">
         </div>
-        <div class="form-group" style="text-align: left;">
+        <div class="form-group-auth">
             <label>Contraseña</label>
             <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
         </div>
-        <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; margin-top:10px; padding: 18px;" onclick="iniciarSesion()">ENTRAR A CANALES</button>
+        <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; padding: 18px; border-radius: 14px; font-weight: 900;" onclick="iniciarSesion()">ENTRAR A CANALES</button>
         <div id="loginStatus" class="status"></div>
     </div>
 </div>
@@ -725,7 +732,14 @@
         }
     }
 
-    function cerrarSesion() { localStorage.removeItem("novaplay_session_token"); location.reload(); }
+    function cerrarSesion() {
+        openModal("Cerrar Sesión", "¿Estás seguro que deseas salir de la Administración de Canales?").then(confirm => {
+            if (confirm) {
+                localStorage.removeItem("novaplay_session_token");
+                location.reload();
+            }
+        });
+    }
 
     async function uploadIcon() {
         const fileInput = document.getElementById('file-upload');
@@ -1232,11 +1246,15 @@
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    function openModal(title, msg) {
+    /* NovaModal Premium */
+    function openModal(title, msg, type = "confirm", options = [], defaultValue = "") {
         return new Promise((resolve) => {
             const m = document.getElementById("novaModal");
+            if (!m) return resolve(false);
+
             document.getElementById("novaModalTitle").innerText = title;
             document.getElementById("novaModalMessage").innerText = msg;
+
             m.style.display = "flex";
 
             document.getElementById("novaModalCancel").onclick = () => {
