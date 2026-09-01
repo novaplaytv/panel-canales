@@ -1010,8 +1010,52 @@
         renderChannels();
     }
 
-    function bulkDelete() {
+    async function bulkDelete() {
         if (selectedChannels.length === 0 || !confirm('¿Eliminar los canales seleccionados?')) return;
+
+        // Preparar lista de iconos únicos para posible borrado
+        const iconosABorrar = new Set();
+
+        selectedChannels.forEach(s => {
+            const ch = catalogo[s.catIdx].items[s.chIdx];
+            const iconoUrl = ch.icono || "";
+            const fileName = iconoUrl.split('/').pop();
+
+            if (fileName && fileName.toLowerCase().endsWith('.webp') && iconoUrl.includes('novaimg/icons/')) {
+                // Contar usos globales
+                let usos = 0;
+                catalogo.forEach(cat => {
+                    (cat.items || []).forEach(item => {
+                        if (item.icono === iconoUrl) usos++;
+                    });
+                });
+
+                // Contar cuántos de esos usos están en la selección actual
+                let usosEnSeleccion = 0;
+                selectedChannels.forEach(sel => {
+                    if (catalogo[sel.catIdx].items[sel.chIdx].icono === iconoUrl) usosEnSeleccion++;
+                });
+
+                // Si todos los canales que usan este icono van a ser borrados
+                if (usos === usosEnSeleccion) {
+                    iconosABorrar.add(fileName);
+                }
+            }
+        });
+
+        if (iconosABorrar.size > 0) {
+            if (confirm(`Se han detectado ${iconosABorrar.size} iconos que quedarán huérfanos. ¿Deseas eliminarlos también de GitHub?`)) {
+                for (const file of iconosABorrar) {
+                    await fetchJSON({
+                        action: "seguridad_eliminar_archivo_github",
+                        repo: "novaimg",
+                        path: "icons/" + file
+                    }, true);
+                }
+                novaToast(`${iconosABorrar.size} iconos eliminados de la galería.`);
+            }
+        }
+
         // Group by cat and delete in reverse ch order
         const grouped = {};
         selectedChannels.forEach(s => { if (!grouped[s.catIdx]) grouped[s.catIdx] = []; grouped[s.catIdx].push(s.chIdx); });
@@ -1020,6 +1064,7 @@
         });
         clearSelection();
         renderChannels();
+        novaToast("Canales eliminados correctamente.");
     }
 
     // --- Icon Browser Logic ---
@@ -1123,10 +1168,44 @@
         renderChannels();
     }
 
-    function deleteChannel() {
+    async function deleteChannel() {
         const chIndex = parseInt(document.getElementById('edit-channel-index').value);
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
-        if (chIndex >= 0 && confirm('¿Eliminar canal?')) { catalogo[catIndex].items.splice(chIndex, 1); closeModal('channel-modal'); renderChannels(); }
+        if (chIndex < 0) return;
+
+        const ch = catalogo[catIndex].items[chIndex];
+        if (!confirm(`¿Eliminar canal "${ch.name}"?`)) return;
+
+        // --- LÓGICA DE LIMPIEZA DE ICONO ---
+        const iconoUrl = ch.icono || "";
+        const fileName = iconoUrl.split('/').pop();
+
+        if (fileName && fileName.toLowerCase().endsWith('.webp') && iconoUrl.includes('novaimg/icons/')) {
+            // Contar usos del icono en todo el catálogo
+            let usos = 0;
+            catalogo.forEach(cat => {
+                (cat.items || []).forEach(item => {
+                    if (item.icono === iconoUrl) usos++;
+                });
+            });
+
+            if (usos === 1) {
+                if (confirm(`Este icono ("${fileName}") ya no será usado por ningún otro canal. ¿Deseas eliminarlo también de GitHub para ahorrar espacio?`)) {
+                    await fetchJSON({
+                        action: "seguridad_eliminar_archivo_github",
+                        repo: "novaimg",
+                        path: "icons/" + fileName
+                    }, true);
+                    novaToast(`Icono "${fileName}" eliminado de la galería.`);
+                }
+            }
+        }
+        // -----------------------------------
+
+        catalogo[catIndex].items.splice(chIndex, 1);
+        closeModal('channel-modal');
+        renderChannels();
+        novaToast("Canal eliminado localmente.");
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
