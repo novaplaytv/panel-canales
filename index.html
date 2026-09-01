@@ -1273,16 +1273,17 @@
 
     // System Status Badge
     function checkSystemStatus() {
-        fetch("https://mrghnngupolsgatcmevw.supabase.co/storage/v1/object/public/Novaplay/eventos.json")
+        fetch("https://mrghnngupolsgatcmevw.supabase.co/storage/v1/object/public/Novaplay/mantenimiento.json?t=" + Date.now())
             .then(res => res.json())
             .then(data => {
                 const badge = document.getElementById('statusBadge');
-                if (data.activo) {
-                    badge.style.color = '#4caf50';
-                    badge.innerText = "🟢 OPERATIVO";
-                } else {
+                // Según tu configuración: true = Mantenimiento, false = Operativo
+                if (data.success === true) {
                     badge.style.color = '#ffd700';
                     badge.innerText = "🟡 MANTENIMIENTO";
+                } else {
+                    badge.style.color = '#4caf50';
+                    badge.innerText = "🟢 OPERATIVO";
                 }
             })
             .catch(() => {
