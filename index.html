@@ -812,6 +812,11 @@
         dataToSave.forEach(cat => {
             if (cat.items) {
                 cat.items.forEach(ch => {
+                    // FASE REPARACIÓN (v86): Auto-detección masiva de canales Flow
+                    if (ch.url && ch.url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
+                        ch.flow = "yes";
+                    }
+
                     // Eliminar 'canal' y campos vacíos
                     delete ch.canal;
                     Object.keys(ch).forEach(key => {
