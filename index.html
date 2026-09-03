@@ -809,9 +809,16 @@
     async function saveData() {
         // Limpieza profunda antes de guardar
         const dataToSave = JSON.parse(JSON.stringify(catalogo));
+
+        // FASE ORDENACIÓN (v87): Definir el orden estricto de las llaves solicitado
+        const keyOrder = [
+            "name", "epg_id", "info", "CH-events", "flow", "NSFW", "status", "url",
+            "type", "drm_license_uri", "Origin", "Referer", "User-Agent", "icono"
+        ];
+
         dataToSave.forEach(cat => {
             if (cat.items) {
-                cat.items.forEach(ch => {
+                cat.items = cat.items.map(ch => {
                     // FASE REPARACIÓN (v86): Auto-detección masiva de canales Flow
                     if (ch.url && ch.url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
                         ch.flow = "yes";
@@ -819,11 +826,25 @@
 
                     // Eliminar 'canal' y campos vacíos
                     delete ch.canal;
-                    Object.keys(ch).forEach(key => {
-                        if (ch[key] === "" || ch[key] === null || ch[key] === undefined) {
-                            delete ch[key];
+
+                    // Crear un nuevo objeto con las llaves en el orden correcto
+                    const orderedCh = {};
+
+                    // 1. Insertar llaves en el orden solicitado si existen
+                    keyOrder.forEach(key => {
+                        if (ch[key] !== "" && ch[key] !== null && ch[key] !== undefined) {
+                            orderedCh[key] = ch[key];
                         }
                     });
+
+                    // 2. Insertar cualquier otra llave que no esté en la lista de orden (ej: url2, drm2, etc.)
+                    Object.keys(ch).forEach(key => {
+                        if (!keyOrder.includes(key) && ch[key] !== "" && ch[key] !== null && ch[key] !== undefined) {
+                            orderedCh[key] = ch[key];
+                        }
+                    });
+
+                    return orderedCh;
                 });
             }
         });
