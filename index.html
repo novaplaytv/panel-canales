@@ -579,6 +579,9 @@
             </div>
 
             <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 10px;">
+                <button class="btn btn-ghost" style="margin-right: auto;" onclick="copyAndMoveChannel()">
+                    <i class="fas fa-copy"></i> Copiar y Mover
+                </button>
                 <button class="btn btn-danger" onclick="deleteChannel()">Eliminar</button>
                 <button class="btn btn-primary" onclick="saveChannel()">Guardar Canal</button>
             </div>
@@ -1196,6 +1199,25 @@
     function toggleExtraField(id) {
         const el = document.getElementById(id);
         el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function copyAndMoveChannel() {
+        const chIndex = parseInt(document.getElementById('edit-channel-index').value);
+        const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
+        if (chIndex < 0) return;
+
+        const ch = JSON.parse(JSON.stringify(catalogo[catIndex].items[chIndex]));
+
+        const catOptions = catalogo.map((c, i) => ({ value: i, text: c.title }));
+        const targetCatIdx = await openModal("Copiar y Mover", `Seleccione la categoría de destino para una copia de "${ch.name}":`, "select", catOptions);
+
+        if (targetCatIdx !== false) {
+            const targetIdx = parseInt(targetCatIdx);
+            catalogo[targetIdx].items.push(ch);
+            closeModal('channel-modal');
+            renderChannels();
+            novaToast(`Copia de "${ch.name}" movida a "${catalogo[targetIdx].title}"`);
+        }
     }
 
     function saveChannel() {
