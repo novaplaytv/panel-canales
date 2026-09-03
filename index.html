@@ -1225,6 +1225,8 @@
         const catIndex = parseInt(document.getElementById('edit-channel-cat-index').value);
         const existingCh = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {};
         const info = document.getElementById('ch-info').value.trim();
+        const url = document.getElementById('ch-url').value.trim();
+
         const ch = {
             ...existingCh,
             name: document.getElementById('ch-name').value.trim(),
@@ -1233,7 +1235,7 @@
             icono: document.getElementById('ch-icono').value.trim(),
             status: document.getElementById('ch-status').value,
             NSFW: document.getElementById('ch-nsfw').value,
-            url: document.getElementById('ch-url').value.trim(),
+            url: url,
             url2: document.getElementById('ch-url2').value.trim(),
             Referer: document.getElementById('ch-referer').value.trim(),
             Origin: document.getElementById('ch-origin').value.trim(),
@@ -1243,6 +1245,12 @@
             epg_id: document.getElementById('ch-epg-id').value.trim(),
             epg_url: document.getElementById('ch-epg-url').value.trim()
         };
+
+        // FASE REPARACIÓN (v86): Auto-detección de motor Flow por URL
+        if (url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
+            ch.flow = "yes";
+        }
+
         if (!ch.name) return novaToast('Nombre obligatorio', 'error');
         if (chIndex >= 0) { catalogo[catIndex].items[chIndex] = ch; }
         else { catalogo[catIndex].items.push(ch); }
