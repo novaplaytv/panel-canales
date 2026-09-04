@@ -106,6 +106,7 @@
         .channel-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 15px; display: flex; align-items: center; gap: 15px; cursor: move; transition: 0.2s; position: relative; min-height: 100px; }
         .channel-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .channel-card.selected { border-color: var(--primary); background: rgba(229, 9, 20, 0.05); }
+        .channel-card.inactive { opacity: 0.5; filter: grayscale(0.8); background: rgba(0,0,0,0.2); }
         .channel-card.no-drag { cursor: default; }
         .channel-logo { width: 50px; height: 50px; border-radius: 12px; background: #000; object-fit: contain; border: 1px solid var(--border); }
         .channel-info { overflow: hidden; flex-grow: 1; }
@@ -1018,7 +1019,12 @@
             if (filter && !ch.name.toLowerCase().includes(filter.toLowerCase())) return;
             const card = document.createElement('div');
             const isSelected = selectedChannels.some(s => s.catIdx === ch.catIdx && s.chIdx === ch.chIdx);
-            card.className = 'channel-card' + (currentCategoryIndex < 0 ? ' no-drag' : '') + (isSelected ? ' selected' : '');
+            const isInactive = String(ch.status) === 'false';
+            card.className = 'channel-card' +
+                             (currentCategoryIndex < 0 ? ' no-drag' : '') +
+                             (isSelected ? ' selected' : '') +
+                             (isInactive ? ' inactive' : '');
+
             card.innerHTML = `
                 <input type="checkbox" class="channel-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectChannel(event, ${ch.catIdx}, ${ch.chIdx})">
                 <img src="${ch.icono}" class="channel-logo" onerror="this.src='https://via.placeholder.com/50?text=?'">
