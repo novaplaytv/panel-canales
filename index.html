@@ -655,6 +655,9 @@
 <!-- Bulk Actions Bar -->
 <div id="bulk-bar" class="bulk-bar">
     <div class="bulk-info" id="bulk-count">0 Seleccionados</div>
+    <button class="btn btn-ghost" onclick="bulkCopy()">
+        <i class="fas fa-copy"></i> <span>Copiar</span>
+    </button>
     <button class="btn btn-ghost" onclick="bulkMoveCategory()">
         <i class="fas fa-exchange-alt"></i> <span>Mover</span>
     </button>
@@ -1092,6 +1095,34 @@
         });
         clearSelection();
         renderCategories();
+    }
+
+    function bulkCopy() {
+        if (selectedChannels.length === 0) return;
+
+        // Agrupar por categoría para procesar correctamente
+        const grouped = {};
+        selectedChannels.forEach(s => {
+            if (!grouped[s.catIdx]) grouped[s.catIdx] = [];
+            grouped[s.catIdx].push(s.chIdx);
+        });
+
+        Object.keys(grouped).forEach(catIdx => {
+            // Ordenar índices de mayor a menor para no romper la posición al insertar
+            const indices = grouped[catIdx].sort((a, b) => b - a);
+            const items = catalogo[catIdx].items;
+
+            indices.forEach(chIdx => {
+                const original = items[chIdx];
+                const copy = JSON.parse(JSON.stringify(original));
+                // Insertar justo al lado (derecha)
+                items.splice(chIdx + 1, 0, copy);
+            });
+        });
+
+        clearSelection();
+        renderChannels();
+        novaToast("Canales duplicados correctamente.");
     }
 
     function bulkToggleStatus() {
