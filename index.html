@@ -1032,6 +1032,7 @@
                 <div class="channel-info">
                     <h3>${ch.name}</h3>
                     <p>${String(ch.status) === 'true' ? 'Activo' : 'Inactivo'}</p>
+                    ${ch.info ? `<p style="font-size: 10px; color: var(--primary); margin-top: 4px; font-weight: 800; text-transform: uppercase;">${ch.info}</p>` : ''}
                 </div>
                 ${currentCategoryIndex < 0 ? `<span class="channel-cat-tag">${ch.catTitle}</span>` : ''}
                 <button class="btn-icon" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.4); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 1; z-index: 10;" onclick="openChannelModal(${ch.chIdx}, ${ch.catIdx})">
