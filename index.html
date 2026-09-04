@@ -106,7 +106,8 @@
         .channel-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 15px; display: flex; align-items: center; gap: 15px; cursor: move; transition: 0.2s; position: relative; min-height: 100px; }
         .channel-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .channel-card.selected { border-color: var(--primary); background: rgba(229, 9, 20, 0.05); }
-        .channel-card.inactive { opacity: 0.5; filter: grayscale(0.8); background: rgba(0,0,0,0.2); }
+        .channel-card.inactive, .channel-card.inactive * { opacity: 0.5 !important; filter: grayscale(1) !important; }
+        .channel-card.inactive { border-style: dashed !important; background: rgba(0,0,0,0.4) !important; }
         .channel-card.no-drag { cursor: default; }
         .channel-logo { width: 50px; height: 50px; border-radius: 12px; background: #000; object-fit: contain; border: 1px solid var(--border); }
         .channel-info { overflow: hidden; flex-grow: 1; }
@@ -1273,7 +1274,7 @@
             ...existingCh,
             name: document.getElementById('ch-name').value.trim(),
             info: info,
-            "CH-events": info ? "yes" : "",
+            "CH-events": (info.toUpperCase() === "EVENTOS") ? "yes" : "",
             icono: document.getElementById('ch-icono').value.trim(),
             status: document.getElementById('ch-status').value,
             NSFW: document.getElementById('ch-nsfw').value,
