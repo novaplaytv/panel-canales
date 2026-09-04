@@ -568,6 +568,13 @@
                         </button>
                     </div>
                     <div class="form-group">
+                        <label>Tipo (type)</label>
+                        <select id="ch-type">
+                            <option value="CLEARKEY">CLEARKEY</option>
+                            <option value="widevine">widevine</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>DRM License URI</label>
                         <input type="text" id="ch-drm1" placeholder="https://...">
                     </div>
@@ -819,9 +826,11 @@
         dataToSave.forEach(cat => {
             if (cat.items) {
                 cat.items = cat.items.map(ch => {
-                    // FASE REPARACIÓN (v86): Auto-detección masiva de canales Flow
+                    // FASE REPARACIÓN (v86): Auto-detección masiva de canales Flow (Modo Estricto)
                     if (ch.url && ch.url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
                         ch.flow = "yes";
+                    } else {
+                        delete ch.flow; // Eliminar si la URL no corresponde
                     }
 
                     // Eliminar 'canal' y campos vacíos
@@ -1209,6 +1218,7 @@
         document.getElementById('ch-referer').value = ch.Referer || '';
         document.getElementById('ch-origin').value = ch.Origin || '';
         document.getElementById('ch-user').value = ch['User-Agent'] || '';
+        document.getElementById('ch-type').value = ch.type || 'CLEARKEY';
         document.getElementById('ch-drm1').value = ch.drm_license_uri || '';
         document.getElementById('ch-drm2').value = ch.drm_license_uri2 || '';
         document.getElementById('ch-epg-id').value = ch.epg_id || '';
@@ -1266,15 +1276,18 @@
             Referer: document.getElementById('ch-referer').value.trim(),
             Origin: document.getElementById('ch-origin').value.trim(),
             'User-Agent': document.getElementById('ch-user').value.trim(),
+            type: document.getElementById('ch-type').value,
             drm_license_uri: document.getElementById('ch-drm1').value.trim(),
             drm_license_uri2: document.getElementById('ch-drm2').value.trim(),
             epg_id: document.getElementById('ch-epg-id').value.trim(),
             epg_url: document.getElementById('ch-epg-url').value.trim()
         };
 
-        // FASE REPARACIÓN (v86): Auto-detección de motor Flow por URL
+        // FASE REPARACIÓN (v86): Auto-detección de motor Flow por URL (Modo Estricto)
         if (url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
             ch.flow = "yes";
+        } else {
+            delete ch.flow;
         }
 
         if (!ch.name) return novaToast('Nombre obligatorio', 'error');
