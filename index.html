@@ -969,7 +969,13 @@
         catalogo.forEach((cat, index) => {
             const item = document.createElement('div');
             item.className = `category-item ${index === currentCategoryIndex ? 'active' : ''}`;
-            item.innerHTML = `<span><i class="fas fa-folder"></i> ${cat.title}</span><div class="actions"><button class="btn-icon" onclick="openCategoryModal(${index})"><i class="fas fa-edit"></i></button><button class="btn-icon" onclick="deleteCategory(${index})"><i class="fas fa-trash"></i></button></div>`;
+            item.innerHTML = `
+                <span><i class="fas fa-folder"></i> ${cat.title}</span>
+                <div class="actions">
+                    <button class="btn-icon" onclick="copyCategory(${index})" title="Copiar Categoría"><i class="fas fa-copy"></i></button>
+                    <button class="btn-icon" onclick="openCategoryModal(${index})" title="Editar"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon" onclick="deleteCategory(${index})" title="Eliminar"><i class="fas fa-trash"></i></button>
+                </div>`;
             item.onclick = (e) => { if (!e.target.closest('.actions')) selectCategory(index); };
             dragList.appendChild(item);
         });
@@ -1081,10 +1087,13 @@
 
     function clearSelection() { selectedChannels = []; updateBulkBar(); renderChannels(document.getElementById('channel-search').value); }
 
-    function bulkMoveCategory() {
+    async function bulkMoveCategory() {
         if (selectedChannels.length === 0) return;
-        const catNames = catalogo.map((c, i) => `${i}: ${c.title}`).join('\n');
-        const target = prompt(`Mover a categoría (ID):\n${catNames}`);
+
+        const catOptions = catalogo.map((c, i) => ({ value: i, text: c.title }));
+        const target = await openModal("Mover Canales", `Seleccione la categoría de destino para los ${selectedChannels.length} canales:`, "select", catOptions);
+
+        if (target === false) return;
         const targetIdx = parseInt(target);
         if (isNaN(targetIdx) || !catalogo[targetIdx]) return;
 
@@ -1095,6 +1104,7 @@
         });
         clearSelection();
         renderCategories();
+        novaToast(`${selectedChannels.length} canales movidos a "${catalogo[targetIdx].title}"`);
     }
 
     function bulkCopy() {
@@ -1229,12 +1239,22 @@
         renderCategories();
     }
     async function deleteCategory(index) {
-        if (await openModal("Eliminar Categoría", `¿Estás seguro de eliminar esta categoría y todos sus canales?`)) {
+        if (await openModal("Eliminar Categoría", `¿Estás seguro de eliminar esta categoría ("${catalogo[index].title}") y todos sus canales?`)) {
             catalogo.splice(index, 1);
             currentCategoryIndex = -1;
             renderCategories();
             novaToast("Categoría eliminada.");
         }
+    }
+
+    function copyCategory(index) {
+        const original = catalogo[index];
+        const copy = JSON.parse(JSON.stringify(original));
+        copy.title = copy.title + " (Copia)";
+        // Insertar después de la original
+        catalogo.splice(index + 1, 0, copy);
+        renderCategories();
+        novaToast(`Copia de "${original.title}" creada.`);
     }
 
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
