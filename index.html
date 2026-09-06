@@ -403,8 +403,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Versión</label>
-                        <input type="text" id="event-version" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        <label>Reproductor</label>
+                        <select id="event-show-player">
+                            <option value="true">Mostrar en TV/Player</option>
+                            <option value="false">Ocultar en TV/Player</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Fecha Evento</label>
@@ -413,6 +416,10 @@
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
+                        <label>Versión</label>
+                        <input type="text" id="event-version" readonly style="opacity: 0.6; cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
                         <label>Fecha Hasta</label>
                         <input type="date" id="event-date-until">
                     </div>
@@ -420,6 +427,8 @@
                         <label>Hora Inicio</label>
                         <input type="time" id="event-start-time">
                     </div>
+                </div>
+                <div class="grid-3">
                     <div class="form-group">
                         <label>Hora Fin</label>
                         <input type="time" id="event-end-time">
@@ -904,6 +913,7 @@
         if (!eventosData) return;
         document.getElementById('event-marquee').value = eventosData.texto || '';
         document.getElementById('event-active').value = String(eventosData.activo) || 'false';
+        document.getElementById('event-show-player').value = String(eventosData.mostrarEnReproductor) || 'false';
         document.getElementById('event-version').value = eventosData.eventoVersion || '0';
         document.getElementById('event-date').value = eventosData.fecha || '';
         document.getElementById('event-date-until').value = eventosData['fecha-hasta'] || '';
@@ -921,6 +931,7 @@
         if (!eventosData) return;
         const texto = document.getElementById('event-marquee').value.trim();
         const activo = document.getElementById('event-active').value === 'true';
+        const mostrarEnReproductor = document.getElementById('event-show-player').value === 'true';
         const fecha = document.getElementById('event-date').value;
         const fecha_hasta = document.getElementById('event-date-until').value;
         const desde = document.getElementById('event-start-time').value;
@@ -928,12 +939,21 @@
         const titulo = document.getElementById('popup-title').value.trim();
         const activado = document.getElementById('popup-active').value === 'true';
         const parrafos = document.getElementById('popup-paragraphs').value.trim().split('\n').filter(p => p.trim() !== '');
-        const marqueeChanged = texto !== (eventosData.texto || '') || activo !== (eventosData.activo || false) || fecha !== (eventosData.fecha || '') || fecha_hasta !== (eventosData['fecha-hasta'] || '') || desde !== (eventosData.desde || '') || hasta !== (eventosData.hasta || '');
+
+        const marqueeChanged = texto !== (eventosData.texto || '') ||
+                               activo !== (eventosData.activo || false) ||
+                               mostrarEnReproductor !== (eventosData.mostrarEnReproductor || false) ||
+                               fecha !== (eventosData.fecha || '') ||
+                               fecha_hasta !== (eventosData['fecha-hasta'] || '') ||
+                               desde !== (eventosData.desde || '') ||
+                               hasta !== (eventosData.hasta || '');
+
         const v2 = eventosData.v2 || {};
         const popupChanged = titulo !== (v2.titulo || '') || activado !== (v2.activado || false) || JSON.stringify(parrafos) !== JSON.stringify(v2.parrafos || []);
         if (!marqueeChanged && !popupChanged) { return novaToast('No se detectaron cambios', 'info'); }
         const newEventos = {
-            ...eventosData, texto, activo, eventoVersion: marqueeChanged ? (parseInt(eventosData.eventoVersion) || 0) + 1 : (parseInt(eventosData.eventoVersion) || 0), fecha, "fecha-hasta": fecha_hasta, desde, hasta,
+            ...eventosData, texto, activo, mostrarEnReproductor,
+            eventoVersion: marqueeChanged ? (parseInt(eventosData.eventoVersion) || 0) + 1 : (parseInt(eventosData.eventoVersion) || 0), fecha, "fecha-hasta": fecha_hasta, desde, hasta,
             v2: { ...v2, titulo, activado, popupVersion: popupChanged ? (parseInt(v2.popupVersion) || 0) + 1 : (parseInt(v2.popupVersion) || 0), parrafos }
         };
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
