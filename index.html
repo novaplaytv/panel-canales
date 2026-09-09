@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -30,7 +30,7 @@
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
         html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* Navegaci√≥n Premium */
+        /* NavegaciÛn Premium */
         .nova-nav { position: fixed; top: 0; width: 100%; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         .nav-inner { max-width: 1400px; margin: auto; height: var(--nav-height); padding: 0 30px; display: flex; align-items: center; justify-content: space-between; }
         .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
@@ -61,7 +61,7 @@
         .btn-login-nav:hover, .btn-logout:hover { transform: scale(1.05); background: var(--primary-hover); }
         .btn-logout { background: var(--error); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
-        /* Dropdown de Administraci√≥n Premium - BLINDAJE TOTAL V4 */
+        /* Dropdown de AdministraciÛn Premium - BLINDAJE TOTAL V4 */
         .admin-menu { position: relative; display: none; align-items: center; height: var(--nav-height); padding: 0 10px; }
         .btn-admin { background: #fff; color: #000; font-weight: 900; border: none; cursor: pointer; padding: 10px 20px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.2s; position: relative; z-index: 10002; }
         .btn-admin:hover { background: var(--primary); color: #fff; box-shadow: 0 0 20px rgba(229,9,20,0.4); }
@@ -93,7 +93,7 @@
 
         .search-box { position: relative; width: 300px; }
         .search-box input { width: 100%; padding: 12px 15px 12px 40px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; }
-        .search-box::before { content: "üîç"; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; }
+        .search-box::before { content: "??"; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; font-size: 14px; }
 
         .stats-container { display: flex; gap: 10px; margin-right: 15px; }
         .stat-chip { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
@@ -292,10 +292,10 @@
             <img src="https://raw.githubusercontent.com/novaplaytv/novaimg/main/novasplash.webp" alt="Logo">
             <div style="display: flex; flex-direction: column; line-height: 1;">
                 NOVAPLAY | ADMIN. DE CANALES
-                <span id="statusBadge" style="font-size: 8px; font-weight: 800; margin-top: 4px; letter-spacing: 0; opacity: 0.8;">üü¢ CARGANDO...</span>
+                <span id="statusBadge" style="font-size: 8px; font-weight: 800; margin-top: 4px; letter-spacing: 0; opacity: 0.8;">?? CARGANDO...</span>
             </div>
         </a>
-        <button class="nav-toggle" id="navToggle" aria-label="Abrir men√∫">
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir men˙">
             <span></span>
             <span></span>
             <span></span>
@@ -309,11 +309,11 @@
                     <a href="https://novaplaytv.github.io/Dashboard/"><i class="fas fa-chart-line"></i> Dashboard Central</a>
                     <a href="https://novaplaytv.github.io/panel-canales/"><i class="fas fa-tv"></i> Admin. Canales</a>
                     <a href="https://novaplaytv.github.io/NovaSecurity/"><i class="fas fa-shield-alt"></i> NovaSecurity</a>
-                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de Se√±al</a>
-                    <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/"><i class="fas fa-icons"></i> Gesti√≥n de Iconos</a>
+                    <a href="https://novaplaytv.github.io/SignalVerificador/"><i class="fas fa-broadcast-tower"></i> Verificador de SeÒal</a>
+                    <a href="https://novaplaytv.github.io/novaimg/actualizar-icono/"><i class="fas fa-icons"></i> GestiÛn de Iconos</a>
                     <a href="https://novaplaytv.github.io/novaimg/generador/"><i class="fas fa-magic"></i> Icon Studio</a>
                     <a href="https://novaplaytv.github.io/novaepg/"><i class="fas fa-calendar-alt"></i> Buscador EPG ID</a>
-                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesi√≥n</a>
+                    <a href="#" onclick="cerrarSesion(); return false;" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar SesiÛn</a>
                 </div>
             </div>
         </div>
@@ -328,8 +328,8 @@
             <input type="text" id="username" placeholder="Usuario" autocomplete="username">
         </div>
         <div class="form-group-auth">
-            <label>Contrase√±a</label>
-            <input type="password" id="password" placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢" autocomplete="current-password">
+            <label>ContraseÒa</label>
+            <input type="password" id="password" placeholder="ïïïïïïïï" autocomplete="current-password">
         </div>
         <button class="btn btn-primary" id="loginButton" style="width:100%; justify-content:center; padding: 18px; border-radius: 14px; font-weight: 900;" onclick="iniciarSesion()">ENTRAR A CANALES</button>
         <div id="loginStatus" class="status"></div>
@@ -347,7 +347,7 @@
         <div id="category-list"></div>
         <div style="padding: 20px; border-top: 1px solid var(--border);">
             <button class="btn btn-ghost" style="width:100%; justify-content: center;" onclick="openCategoryModal()">
-                <i class="fas fa-plus-circle"></i> <span>Nueva Categor√≠a</span>
+                <i class="fas fa-plus-circle"></i> <span>Nueva CategorÌa</span>
             </button>
         </div>
     </aside>
@@ -389,10 +389,10 @@
             <h2 style="margin-bottom: 20px; font-weight: 900;">Editor de Eventos y Avisos</h2>
 
             <div class="form-section">
-                <h4>Configuraci√≥n de Notificaciones</h4>
+                <h4>ConfiguraciÛn de Notificaciones</h4>
                 <div class="form-group">
-                    <label>Texto de la Notificaci√≥n</label>
-                    <textarea id="event-marquee" placeholder="Escriba el mensaje aqu√≠..."></textarea>
+                    <label>Texto de la NotificaciÛn</label>
+                    <textarea id="event-marquee" placeholder="Escriba el mensaje aquÌ..."></textarea>
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
@@ -416,7 +416,7 @@
                 </div>
                 <div class="grid-3">
                     <div class="form-group">
-                        <label>Versi√≥n</label>
+                        <label>VersiÛn</label>
                         <input type="text" id="event-version" readonly style="opacity: 0.6; cursor: not-allowed;">
                     </div>
                     <div class="form-group">
@@ -440,11 +440,11 @@
                 <h4>V2 Pop-up (Aviso Emergente)</h4>
                 <div class="grid-2">
                     <div class="form-group">
-                        <label>T√≠tulo del Pop-up</label>
-                        <input type="text" id="popup-title" placeholder="Ej: Nueva Actualizaci√≥n">
+                        <label>TÌtulo del Pop-up</label>
+                        <input type="text" id="popup-title" placeholder="Ej: Nueva ActualizaciÛn">
                     </div>
                     <div class="form-group">
-                        <label>Pop-up Versi√≥n</label>
+                        <label>Pop-up VersiÛn</label>
                         <input type="text" id="popup-version" readonly style="opacity: 0.6; cursor: not-allowed;">
                     </div>
                 </div>
@@ -456,13 +456,13 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>P√°rrafos (Contenido del Pop-up)</label>
-                    <textarea id="popup-paragraphs" style="height: 120px;" placeholder="Ingrese cada p√°rrafo en una l√≠nea nueva..."></textarea>
+                    <label>P·rrafos (Contenido del Pop-up)</label>
+                    <textarea id="popup-paragraphs" style="height: 120px;" placeholder="Ingrese cada p·rrafo en una lÌnea nueva..."></textarea>
                 </div>
             </div>
 
             <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 20px; font-size: 16px;" onclick="saveEventos()">
-                <i class="fas fa-save"></i> üíæ <span>Guardar Eventos</span>
+                <i class="fas fa-save"></i> ?? <span>Guardar Eventos</span>
             </button>
         </div>
     </div>
@@ -480,14 +480,14 @@
             <input type="hidden" id="edit-channel-cat-index">
 
             <div class="form-section">
-                <h4>Informaci√≥n General</h4>
+                <h4>InformaciÛn General</h4>
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Nombre del Canal</label>
                         <input type="text" id="ch-name" placeholder="Ej: HBO HD">
                     </div>
                     <div class="form-group">
-                        <label>Informaci√≥n / Evento (info)</label>
+                        <label>InformaciÛn / Evento (info)</label>
                         <input type="text" id="ch-info" placeholder="Ej: EVENTOS">
                     </div>
                 </div>
@@ -496,7 +496,7 @@
                     <label>Logo URL (icono)</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="text" id="ch-icono" placeholder="https://...">
-                        <button class="btn btn-ghost" onclick="openIconBrowser()" title="Buscar en Galer√≠a">
+                        <button class="btn btn-ghost" onclick="openIconBrowser()" title="Buscar en GalerÌa">
                             <i class="fas fa-search"></i>
                         </button>
                         <button class="btn btn-ghost" onclick="document.getElementById('file-upload').click()" title="Subir de PC">
@@ -525,15 +525,15 @@
             </div>
 
             <div class="form-section">
-                <h4>Configuraci√≥n EPG (Gu√≠a TV)</h4>
+                <h4>ConfiguraciÛn EPG (GuÌa TV)</h4>
                 <div class="grid-2">
                     <div class="form-group">
                         <label>EPG ID (xmltv_id)</label>
                         <input type="text" id="ch-epg-id" placeholder="Ej: DisneyChannel.py">
                     </div>
                     <div class="form-group">
-                        <label>EPG URL (Opcional - Gu√≠a externa)</label>
-                        <input type="text" id="ch-epg-url" placeholder="Vac√≠o = Usar Gu√≠a NovaPlay">
+                        <label>EPG URL (Opcional - GuÌa externa)</label>
+                        <input type="text" id="ch-epg-url" placeholder="VacÌo = Usar GuÌa NovaPlay">
                     </div>
                 </div>
             </div>
@@ -556,7 +556,7 @@
             </div>
 
             <div class="form-section">
-                <h4>Configuraci√≥n Avanzada</h4>
+                <h4>ConfiguraciÛn Avanzada</h4>
                 <div class="grid-3">
                     <div class="form-group">
                         <label>Referer</label>
@@ -611,13 +611,13 @@
 <div id="category-modal" class="modal-overlay">
     <div class="modal" style="max-width: 450px;">
         <div class="modal-header">
-            <h2 style="font-weight:900;">Categor√≠a</h2>
+            <h2 style="font-weight:900;">CategorÌa</h2>
             <button class="btn-icon" onclick="closeModal('category-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="edit-category-index">
             <div class="form-group">
-                <label>Nombre de la Categor√≠a (title)</label>
+                <label>Nombre de la CategorÌa (title)</label>
                 <input type="text" id="cat-title" placeholder="Ej: Deportes">
             </div>
             <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px;" onclick="saveCategory()">Guardar</button>
@@ -629,7 +629,7 @@
 <div id="icon-modal" class="modal-overlay">
     <div class="modal">
         <div class="modal-header">
-            <h2 style="font-weight:900;">Galer√≠a de Iconos</h2>
+            <h2 style="font-weight:900;">GalerÌa de Iconos</h2>
             <button class="btn-icon" onclick="closeModal('icon-modal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body" id="icon-browser-body">
@@ -683,8 +683,8 @@
 
 <footer>
     <div class="footer-text">
-        ¬© 2026 NOVAPLAY TV<br>
-        ¬© 2010 - 2026 - MSGT. TODOS LOS DERECHOS RESERVADOS
+        © 2026 NOVAPLAY TV<br>
+        © 2010 - 2026 - NOVAPLAY TV. TODOS LOS DERECHOS RESERVADOS
     </div>
 </footer>
 
@@ -726,7 +726,7 @@
         if (usarSesion && sessionToken) headers.Authorization = "Bearer " + sessionToken;
         try {
             const response = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
-            const data = await response.json().catch(() => ({ error: "Respuesta inv√°lida." }));
+            const data = await response.json().catch(() => ({ error: "Respuesta inv·lida." }));
             return { response, data };
         } catch (e) { return { response: { ok: false }, data: { error: "Error de red." } }; }
     }
@@ -776,7 +776,7 @@
     }
 
     function cerrarSesion() {
-        openModal("Cerrar Sesi√≥n", "¬øEst√°s seguro que deseas salir de la Administraci√≥n de Canales?").then(confirm => {
+        openModal("Cerrar SesiÛn", "øEst·s seguro que deseas salir de la AdministraciÛn de Canales?").then(confirm => {
             if (confirm) {
                 localStorage.removeItem("novaplay_session_token");
                 location.reload();
@@ -790,7 +790,7 @@
         if (!file) return;
         const iconInput = document.getElementById('ch-icono');
         const originalPlaceholder = iconInput.placeholder;
-        iconInput.placeholder = "‚ö° SUBIENDO...";
+        iconInput.placeholder = "? SUBIENDO...";
         iconInput.value = "";
         const fd = new FormData();
         fd.append("action", "actualizar");
@@ -816,13 +816,13 @@
             });
             renderCategories();
 
-            // Restaurar √∫ltima posici√≥n (Solo mientras la pesta√±a est√© abierta)
+            // Restaurar ˙ltima posiciÛn (Solo mientras la pestaÒa estÈ abierta)
             const lastCat = sessionStorage.getItem("last_cat_idx");
             if (lastCat !== null) {
                 selectCategory(parseInt(lastCat));
             }
         } else {
-            novaToast('Error al cargar datos: ' + (data.error || 'Sesi√≥n expirada'), 'error');
+            novaToast('Error al cargar datos: ' + (data.error || 'SesiÛn expirada'), 'error');
             if (response.status === 401) cerrarSesion();
         }
     }
@@ -831,7 +831,7 @@
         // Limpieza profunda antes de guardar
         const dataToSave = JSON.parse(JSON.stringify(catalogo));
 
-        // FASE ORDENACI√ìN (v87): Definir el orden estricto de las llaves solicitado
+        // FASE ORDENACI”N (v87): Definir el orden estricto de las llaves solicitado
         const keyOrder = [
             "name", "epg_id", "info", "CH-events", "flow", "NSFW", "status", "url", "url2",
             "type", "drm_license_uri", "drm_license_uri2", "Origin", "Referer", "User-Agent", "icono"
@@ -840,14 +840,14 @@
         dataToSave.forEach(cat => {
             if (cat.items) {
                 cat.items = cat.items.map(ch => {
-                    // FASE REPARACI√ìN (v86): Auto-detecci√≥n masiva de canales Flow (Modo Estricto)
+                    // FASE REPARACI”N (v86): Auto-detecciÛn masiva de canales Flow (Modo Estricto)
                     if (ch.url && ch.url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
                         ch.flow = "yes";
                     } else {
                         delete ch.flow; // Eliminar si la URL no corresponde
                     }
 
-                    // Eliminar 'canal' y campos vac√≠os
+                    // Eliminar 'canal' y campos vacÌos
                     delete ch.canal;
 
                     // Crear un nuevo objeto con las llaves en el orden correcto
@@ -860,7 +860,7 @@
                         }
                     });
 
-                    // 2. Insertar cualquier otra llave que no est√© en la lista de orden (ej: url2, drm2, etc.)
+                    // 2. Insertar cualquier otra llave que no estÈ en la lista de orden (ej: url2, drm2, etc.)
                     Object.keys(ch).forEach(key => {
                         if (!keyOrder.includes(key) && ch[key] !== "" && ch[key] !== null && ch[key] !== undefined) {
                             orderedCh[key] = ch[key];
@@ -957,7 +957,7 @@
             v2: { ...v2, titulo, activado, popupVersion: popupChanged ? (parseInt(v2.popupVersion) || 0) + 1 : (parseInt(v2.popupVersion) || 0), parrafos }
         };
         const { response, data } = await fetchJSON({ action: "guardar_eventos", eventos: newEventos }, true, API_EVENTOS_URL);
-        if (response.ok && data.success) { novaToast('Notificaciones actualizadas con √©xito', 'success'); eventosData = newEventos; renderEventsEditor(); }
+        if (response.ok && data.success) { novaToast('Notificaciones actualizadas con Èxito', 'success'); eventosData = newEventos; renderEventsEditor(); }
         else { novaToast('Error al guardar notificaciones', 'error'); }
     }
 
@@ -992,7 +992,7 @@
             item.innerHTML = `
                 <span><i class="fas fa-folder"></i> ${cat.title}</span>
                 <div class="actions">
-                    <button class="btn-icon" onclick="copyCategory(${index})" title="Copiar Categor√≠a"><i class="fas fa-copy"></i></button>
+                    <button class="btn-icon" onclick="copyCategory(${index})" title="Copiar CategorÌa"><i class="fas fa-copy"></i></button>
                     <button class="btn-icon" onclick="openCategoryModal(${index})" title="Editar"><i class="fas fa-edit"></i></button>
                     <button class="btn-icon" onclick="deleteCategory(${index})" title="Eliminar"><i class="fas fa-trash"></i></button>
                 </div>`;
@@ -1111,7 +1111,7 @@
         if (selectedChannels.length === 0) return;
 
         const catOptions = catalogo.map((c, i) => ({ value: i, text: c.title }));
-        const target = await openModal("Mover Canales", `Seleccione la categor√≠a de destino para los ${selectedChannels.length} canales:`, "select", catOptions);
+        const target = await openModal("Mover Canales", `Seleccione la categorÌa de destino para los ${selectedChannels.length} canales:`, "select", catOptions);
 
         if (target === false) return;
         const targetIdx = parseInt(target);
@@ -1130,7 +1130,7 @@
     function bulkCopy() {
         if (selectedChannels.length === 0) return;
 
-        // Agrupar por categor√≠a para procesar correctamente
+        // Agrupar por categorÌa para procesar correctamente
         const grouped = {};
         selectedChannels.forEach(s => {
             if (!grouped[s.catIdx]) grouped[s.catIdx] = [];
@@ -1138,7 +1138,7 @@
         });
 
         Object.keys(grouped).forEach(catIdx => {
-            // Ordenar √≠ndices de mayor a menor para no romper la posici√≥n al insertar
+            // Ordenar Ìndices de mayor a menor para no romper la posiciÛn al insertar
             const indices = grouped[catIdx].sort((a, b) => b - a);
             const items = catalogo[catIdx].items;
 
@@ -1167,9 +1167,9 @@
 
     async function bulkDelete() {
         if (selectedChannels.length === 0) return;
-        if (!(await openModal("Eliminar Canales", `¬øEst√°s seguro de eliminar los ${selectedChannels.length} canales seleccionados?`))) return;
+        if (!(await openModal("Eliminar Canales", `øEst·s seguro de eliminar los ${selectedChannels.length} canales seleccionados?`))) return;
 
-        // Preparar lista de iconos √∫nicos para posible borrado
+        // Preparar lista de iconos ˙nicos para posible borrado
         const iconosABorrar = new Set();
 
         selectedChannels.forEach(s => {
@@ -1186,7 +1186,7 @@
                     });
                 });
 
-                // Contar cu√°ntos de esos usos est√°n en la selecci√≥n actual
+                // Contar cu·ntos de esos usos est·n en la selecciÛn actual
                 let usosEnSeleccion = 0;
                 selectedChannels.forEach(sel => {
                     if (catalogo[sel.catIdx].items[sel.chIdx].icono === iconoUrl) usosEnSeleccion++;
@@ -1200,7 +1200,7 @@
         });
 
         if (iconosABorrar.size > 0) {
-            if (await openModal("Limpieza de Galer√≠a", `Se han detectado ${iconosABorrar.size} iconos que quedar√°n hu√©rfanos. ¬øDeseas eliminarlos tambi√©n de GitHub?`)) {
+            if (await openModal("Limpieza de GalerÌa", `Se han detectado ${iconosABorrar.size} iconos que quedar·n huÈrfanos. øDeseas eliminarlos tambiÈn de GitHub?`)) {
                 for (const file of iconosABorrar) {
                     await fetchJSON({
                         action: "seguridad_eliminar_archivo_github",
@@ -1208,7 +1208,7 @@
                         path: "icons/" + file
                     }, true);
                 }
-                novaToast(`${iconosABorrar.size} iconos eliminados de la galer√≠a.`);
+                novaToast(`${iconosABorrar.size} iconos eliminados de la galerÌa.`);
             }
         }
 
@@ -1259,11 +1259,11 @@
         renderCategories();
     }
     async function deleteCategory(index) {
-        if (await openModal("Eliminar Categor√≠a", `¬øEst√°s seguro de eliminar esta categor√≠a ("${catalogo[index].title}") y todos sus canales?`)) {
+        if (await openModal("Eliminar CategorÌa", `øEst·s seguro de eliminar esta categorÌa ("${catalogo[index].title}") y todos sus canales?`)) {
             catalogo.splice(index, 1);
             currentCategoryIndex = -1;
             renderCategories();
-            novaToast("Categor√≠a eliminada.");
+            novaToast("CategorÌa eliminada.");
         }
     }
 
@@ -1271,15 +1271,15 @@
         const original = catalogo[index];
         const copy = JSON.parse(JSON.stringify(original));
         copy.title = copy.title + " (Copia)";
-        // Insertar despu√©s de la original
+        // Insertar despuÈs de la original
         catalogo.splice(index + 1, 0, copy);
         renderCategories();
         novaToast(`Copia de "${original.title}" creada.`);
     }
 
     function openChannelModal(chIndex = -1, catIndex = currentCategoryIndex) {
-        if (catalogo.length === 0) return novaToast('Cree una categor√≠a primero', 'info');
-        if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categor√≠a primero', 'info');
+        if (catalogo.length === 0) return novaToast('Cree una categorÌa primero', 'info');
+        if (catIndex < 0 && chIndex === -1) return novaToast('Seleccione una categorÌa primero', 'info');
         document.getElementById('edit-channel-index').value = chIndex;
         document.getElementById('edit-channel-cat-index').value = catIndex;
         const ch = (chIndex >= 0 && catalogo[catIndex]) ? catalogo[catIndex].items[chIndex] : {
@@ -1324,7 +1324,7 @@
         const ch = JSON.parse(JSON.stringify(catalogo[catIndex].items[chIndex]));
 
         const catOptions = catalogo.map((c, i) => ({ value: i, text: c.title }));
-        const targetCatIdx = await openModal("Copiar y Mover", `Seleccione la categor√≠a de destino para una copia de "${ch.name}":`, "select", catOptions);
+        const targetCatIdx = await openModal("Copiar y Mover", `Seleccione la categorÌa de destino para una copia de "${ch.name}":`, "select", catOptions);
 
         if (targetCatIdx !== false) {
             const targetIdx = parseInt(targetCatIdx);
@@ -1362,7 +1362,7 @@
             epg_url: document.getElementById('ch-epg-url').value.trim()
         };
 
-        // FASE REPARACI√ìN (v86): Auto-detecci√≥n de motor Flow por URL (Modo Estricto)
+        // FASE REPARACI”N (v86): Auto-detecciÛn de motor Flow por URL (Modo Estricto)
         if (url.startsWith("https://flow-cdn-gcp.app.flow.com.ar/")) {
             ch.flow = "yes";
         } else {
@@ -1382,14 +1382,14 @@
         if (chIndex < 0) return;
 
         const ch = catalogo[catIndex].items[chIndex];
-        if (!(await openModal("Eliminar Canal", `¬øEst√°s seguro de eliminar el canal "${ch.name}"?`))) return;
+        if (!(await openModal("Eliminar Canal", `øEst·s seguro de eliminar el canal "${ch.name}"?`))) return;
 
-        // --- L√ìGICA DE LIMPIEZA DE ICONO ---
+        // --- L”GICA DE LIMPIEZA DE ICONO ---
         const iconoUrl = ch.icono || "";
         const fileName = iconoUrl.split('/').pop();
 
         if (fileName && fileName.toLowerCase().endsWith('.webp') && iconoUrl.includes('novaimg/icons/')) {
-            // Contar usos del icono en todo el cat√°logo
+            // Contar usos del icono en todo el cat·logo
             let usos = 0;
             catalogo.forEach(cat => {
                 (cat.items || []).forEach(item => {
@@ -1398,13 +1398,13 @@
             });
 
             if (usos === 1) {
-                if (await openModal("Limpieza de Icono", `Este icono ("${fileName}") ya no ser√° usado por ning√∫n otro canal. ¬øDeseas eliminarlo tambi√©n de GitHub para ahorrar espacio?`)) {
+                if (await openModal("Limpieza de Icono", `Este icono ("${fileName}") ya no ser· usado por ning˙n otro canal. øDeseas eliminarlo tambiÈn de GitHub para ahorrar espacio?`)) {
                     await fetchJSON({
                         action: "seguridad_eliminar_archivo_github",
                         repo: "novaimg",
                         path: "icons/" + fileName
                     }, true);
-                    novaToast(`Icono "${fileName}" eliminado de la galer√≠a.`);
+                    novaToast(`Icono "${fileName}" eliminado de la galerÌa.`);
                 }
             }
         }
@@ -1467,7 +1467,7 @@
 
     document.getElementById("password").addEventListener("keydown", e => { if (e.key === "Enter") iniciarSesion(); });
 
-    // Toggle Men√∫ M√≥vil
+    // Toggle Men˙ MÛvil
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
 
@@ -1478,7 +1478,7 @@
         });
     }
 
-    // Cerrar men√∫ al clickear link (m√≥vil)
+    // Cerrar men˙ al clickear link (mÛvil)
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             if (navToggle) navToggle.classList.remove('active');
@@ -1486,7 +1486,7 @@
         });
     });
 
-    // --- SISTEMA DE CONEXI√ìN SEGURA NOVACONNECT ---
+    // --- SISTEMA DE CONEXI”N SEGURA NOVACONNECT ---
     const CONNECTOR_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/access_connector";
     const APP_USER = "novaplay";
 
@@ -1510,7 +1510,7 @@
             });
             return await dataRes.json();
         } catch (e) {
-            console.error("Error en conexi√≥n segura:", e);
+            console.error("Error en conexiÛn segura:", e);
             return null;
         }
     }
@@ -1523,12 +1523,12 @@
 
         if (data && data.success === true) {
             badge.style.color = '#ffd700';
-            badge.innerText = "üü° MANTENIMIENTO";
+            badge.innerText = "?? MANTENIMIENTO";
         } else if (data) {
             badge.style.color = '#4caf50';
-            badge.innerText = "üü¢ OPERATIVO";
+            badge.innerText = "?? OPERATIVO";
         } else {
-            badge.innerText = "üî¥ ERROR";
+            badge.innerText = "?? ERROR";
         }
     }
 
