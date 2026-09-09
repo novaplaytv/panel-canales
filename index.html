@@ -1486,24 +1486,50 @@
         });
     });
 
-    // System Status Badge
-    function checkSystemStatus() {
-        fetch("https://mrghnngupolsgatcmevw.supabase.co/storage/v1/object/public/Novaplay/mantenimiento.json?t=" + Date.now())
-            .then(res => res.json())
-            .then(data => {
-                const badge = document.getElementById('statusBadge');
-                // Según tu configuración: true = Mantenimiento, false = Operativo
-                if (data.success === true) {
-                    badge.style.color = '#ffd700';
-                    badge.innerText = "🟡 MANTENIMIENTO";
-                } else {
-                    badge.style.color = '#4caf50';
-                    badge.innerText = "🟢 OPERATIVO";
-                }
-            })
-            .catch(() => {
-                document.getElementById('statusBadge').innerText = "🔴 ERROR";
+    // --- SISTEMA DE CONEXIÓN SEGURA NOVACONNECT ---
+    const CONNECTOR_URL = "https://mrghnngupolsgatcmevw.supabase.co/functions/v1/access_connector";
+    const APP_USER = "novaplay";
+
+    async function fetchSafeData(action, isBeta = false) {
+        try {
+            const authRes = await fetch(CONNECTOR_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "obtener_credenciales", usuario: APP_USER })
             });
+            const credentials = await authRes.json();
+            const authHeader = "Basic " + btoa(`${APP_USER}:${credentials.password}`);
+
+            const dataRes = await fetch(CONNECTOR_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authHeader
+                },
+                body: JSON.stringify({ action: action, beta: isBeta })
+            });
+            return await dataRes.json();
+        } catch (e) {
+            console.error("Error en conexión segura:", e);
+            return null;
+        }
+    }
+
+    // System Status Badge
+    async function checkSystemStatus() {
+        const data = await fetchSafeData("obtener_mantenimiento");
+        const badge = document.getElementById('statusBadge');
+        if (!badge) return;
+
+        if (data && data.success === true) {
+            badge.style.color = '#ffd700';
+            badge.innerText = "🟡 MANTENIMIENTO";
+        } else if (data) {
+            badge.style.color = '#4caf50';
+            badge.innerText = "🟢 OPERATIVO";
+        } else {
+            badge.innerText = "🔴 ERROR";
+        }
     }
 
     checkSystemStatus();
